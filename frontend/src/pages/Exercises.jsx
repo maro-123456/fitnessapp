@@ -200,7 +200,7 @@ const styles = {
     width: "calc(100vw - 220px)",
     marginLeft: "220px",
     margin: "0",
-    padding: "2rem",
+    padding: "1rem",
     background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
     minHeight: "100vh",
     position: "relative",
@@ -212,9 +212,9 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "3rem",
+    marginBottom: "1.5rem",
     background: "#2d2d2d",
-    padding: "2rem",
+    padding: "1rem",
     borderRadius: "20px",
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
     border: "1px solid #404040",
@@ -263,11 +263,11 @@ const styles = {
   
   filtersSection: {
     background: "#2d2d2d",
-    padding: "2rem",
+    padding: "1rem",
     borderRadius: "20px",
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
     border: "1px solid #404040",
-    marginBottom: "3rem",
+    marginBottom: "1.5rem",
     animation: "fadeIn 0.8s ease-out",
     maxWidth: "1400px",
     marginLeft: "auto",
@@ -306,8 +306,8 @@ const styles = {
   
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-    gap: "24px",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+    gap: "16px",
     animation: "fadeIn 0.5s ease-in",
     maxWidth: "1400px",
     marginLeft: "auto",
@@ -326,7 +326,7 @@ const styles = {
   
   imageContainer: {
     position: "relative",
-    height: "200px",
+    height: "160px",
     overflow: "hidden"
   },
   
@@ -352,7 +352,7 @@ const styles = {
   },
   
   content: {
-    padding: "20px"
+    padding: "15px"
   },
   
   exerciseName: {

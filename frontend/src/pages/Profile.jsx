@@ -600,6 +600,8 @@ export default function Profile() {
         </div>
       )}
     </div>
+  );
+}
 
 // Styles modernes et professionnels pour Profile
 const styles = {
@@ -607,7 +609,7 @@ const styles = {
     width: "calc(100vw - 220px)",
     marginLeft: "220px",
     margin: "0",
-    padding: "0 20px 40px",
+    padding: "0.5rem",
     minHeight: "100vh",
     background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
     position: "relative",
@@ -620,8 +622,8 @@ const styles = {
   headerSection: {
     background: "rgba(45, 45, 45, 0.8)",
     backdropFilter: "blur(10px)",
-    padding: "60px 0",
-    margin: "0 -20px 40px",
+    padding: "2rem 0",
+    margin: "0 -0.5rem 2rem",
     textAlign: "center",
     position: "relative",
     overflow: "hidden",
@@ -636,10 +638,10 @@ const styles = {
     zIndex: 1
   },
   mainTitle: {
-    fontSize: "3rem",
+    fontSize: "2.5rem",
     fontWeight: "800",
     color: "#ffffff",
-    margin: "0 0 15px 0",
+    margin: "0 0 10px 0",
     textShadow: "0 4px 8px rgba(0,0,0,0.3)"
   },
   subtitle: {
@@ -653,7 +655,7 @@ const styles = {
   
   // Tabs Section
   tabsSection: {
-    marginBottom: "40px",
+    marginBottom: "1.5rem",
     maxWidth: "1400px",
     marginLeft: "auto",
     marginRight: "auto"
@@ -662,7 +664,7 @@ const styles = {
     display: "flex",
     gap: "10px",
     justifyContent: "center",
-    padding: "20px",
+    padding: "1rem",
     background: "#2d2d2d",
     borderRadius: "15px",
     boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
@@ -683,7 +685,7 @@ const styles = {
   
   // Content Section
   contentSection: {
-    marginBottom: "40px",
+    marginBottom: "1.5rem",
     maxWidth: "1400px",
     marginLeft: "auto",
     marginRight: "auto"
@@ -692,37 +694,38 @@ const styles = {
   // Profile Grid
   profileGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-    gap: "30px"
+    gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+    gap: "20px"
   },
   
   // Profile Card
   profileCard: {
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)"
+    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+    border: "1px solid #404040"
   },
   profileHeader: {
-    padding: "30px",
-    borderBottom: "1px solid #f1f3f4",
-    background: "#f8f9fa"
+    padding: "1.5rem",
+    borderBottom: "1px solid #404040",
+    background: "#1a1a1a"
   },
   avatarContainer: {
     display: "flex",
     alignItems: "center",
-    gap: "20px",
-    marginBottom: "20px"
+    gap: "15px",
+    marginBottom: "15px"
   },
   avatar: {
-    width: "80px",
-    height: "80px",
+    width: "60px",
+    height: "60px",
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "2rem",
+    fontSize: "1.5rem",
     fontWeight: "700",
     color: "white",
     textShadow: "0 4px 8px rgba(0,0,0,0.3)"
@@ -743,10 +746,10 @@ const styles = {
   
   // Edit Form
   editForm: {
-    padding: "0 30px"
+    padding: "0 1.5rem"
   },
   formGroup: {
-    marginBottom: "20px"
+    marginBottom: "1rem"
   },
   formLabel: {
     display: "block",
@@ -757,41 +760,44 @@ const styles = {
   },
   formInput: {
     width: "100%",
-    padding: "12px 16px",
+    padding: "10px 14px",
     borderRadius: "8px",
-    border: "2px solid #e1e5e9",
+    border: "2px solid #404040",
     fontSize: "1rem",
+    background: "#1a1a1a",
+    color: "#ffffff",
     transition: "border-color 0.3s ease"
   },
   formSelect: {
     width: "100%",
-    padding: "12px 16px",
+    padding: "10px 14px",
     borderRadius: "8px",
-    border: "2px solid #e1e5e9",
+    border: "2px solid #404040",
     fontSize: "1rem",
-    background: "white",
+    background: "#1a1a1a",
+    color: "#ffffff",
     cursor: "pointer"
   },
   formActions: {
     display: "flex",
-    gap: "15px",
-    padding: "0 30px"
+    gap: "10px",
+    padding: "0 1.5rem"
   },
   cancelBtn: {
-    background: "#6c757d",
+    background: "#404040",
     color: "white",
     border: "none",
-    padding: "12px 24px",
+    padding: "10px 20px",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
     fontSize: "1rem"
   },
   saveBtn: {
-    background: "linear-gradient(135deg, #4CAF50 0%, #45a049 100%)",
+    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
     color: "white",
     border: "none",
-    padding: "12px 24px",
+    padding: "10px 20px",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
@@ -801,40 +807,41 @@ const styles = {
   
   // Profile Details
   profileDetails: {
-    padding: "0 30px"
+    padding: "0 1.5rem"
   },
   detailItem: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "15px 0",
-    borderBottom: "1px solid #f1f3f4"
+    padding: "12px 0",
+    borderBottom: "1px solid #404040"
   },
   detailLabel: {
     fontSize: "0.9rem",
-    color: "#636e72",
+    color: "#a1a1a1",
     fontWeight: "500",
     minWidth: "120px"
   },
   detailValue: {
     fontSize: "1rem",
     fontWeight: "600",
-    color: "#2d3436",
+    color: "#ffffff",
     textAlign: "right"
   },
   
   // Quick Stats Card
   quickStatsCard: {
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
-    padding: "30px",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)"
+    padding: "1.5rem",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+    border: "1px solid #404040"
   },
   cardTitle: {
-    fontSize: "1.3rem",
+    fontSize: "1.2rem",
     fontWeight: "700",
-    color: "#2d3436",
-    margin: "0 0 20px 0"
+    color: "#ffffff",
+    margin: "0 0 1rem 0"
   },
   statsGrid: {
     display: "grid",
