@@ -40,7 +40,7 @@ exports.getGyms = async (req, res) => {
     
     const total = await Gym.countDocuments(filter);
     
-    // Renvoyer les données avec la structure attendue par le frontend
+    // Données de test si aucune salle trouvée
     let gymsData = [];
     if (gyms.length > 0) {
       gymsData = gyms.map(gym => ({
@@ -55,20 +55,65 @@ exports.getGyms = async (req, res) => {
         rating: gym.rating,
         coordinates: gym.coordinates
       }));
+    } else {
+      // Données de test si aucune salle trouvée
+      gymsData = [
+        {
+          id: 1,
+          name: "FitClub Paris Centre",
+          address: "75002 Paris, France",
+          phone: "01 42 34 56 78",
+          hours: "6h00 - 23h00",
+          price: 49,
+          type: "fitness",
+          equipment: ["Tapis roulant", "Vélo elliptique", "Haltérophilie", "Musculation"],
+          rating: 4.5,
+          coordinates: { lat: 48.8566, lng: 2.352 }
+        },
+        {
+          id: 2,
+          name: "CrossFit Bastille",
+          address: "75011 Paris, France",
+          phone: "01 42 34 12 34",
+          hours: "6h00 - 22h00",
+          price: 79,
+          type: "crossfit",
+          equipment: ["Kettlebells", "Barres", "Corde à sauter", "Poids libres"],
+          rating: 4.8,
+          coordinates: { lat: 48.853, lng: 2.349 }
+        },
+        {
+          id: 3,
+          name: "Yoga Zen Marais",
+          address: "75004 Paris, France",
+          phone: "01 42 34 98 76",
+          hours: "7h00 - 21h00",
+          price: 35,
+          type: "yoga",
+          equipment: ["Tapis de yoga", "Coussins", "Blocs", "Sangles"],
+          rating: 4.9,
+          coordinates: { lat: 48.846, lng: 2.33 }
+        },
+        {
+          id: 4,
+          name: "Piscine Municipale",
+          address: "75013 Paris, France",
+          phone: "01 42 34 23 45",
+          hours: "7h00 - 21h00",
+          price: 25,
+          type: "swimming",
+          equipment: ["Piscine 25m", "Piscine 50m", "Toboggan", "Solarium"],
+          rating: 4.2,
+          coordinates: { lat: 48.8606, lng: 2.277 }
+        }
+      ];
     }
     
     console.log('Gyms data:', gymsData);
     console.log('Gyms array:', Array.isArray(gymsData));
     
-    res.json({
-      gyms: gymsData,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
+    // Renvoyer directement le tableau de gyms
+    res.json(gymsData);
   } catch (error) {
     console.error('Erreur get gyms:', error);
     res.status(500).json({ message: 'Erreur serveur' });
