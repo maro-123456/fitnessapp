@@ -6,8 +6,8 @@ export default function Layout() {
   return (
     <div>
       <AppBar />
-      <Sidebar />
-      <div style={{ marginLeft: "220px", marginTop: "60px", padding: "20px" }}>
+      <Sidebar style={{ overflowY: "auto" }} />
+      <div style={{ marginLeft: "200px", marginTop: "60px", padding: "20px" }}>
         <Outlet />
       </div>
     </div>

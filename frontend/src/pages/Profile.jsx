@@ -606,8 +606,7 @@ export default function Profile() {
 // Styles modernes et professionnels pour Profile
 const styles = {
   container: {
-    width: "calc(100vw - 220px)",
-    marginLeft: "220px",
+    width: "100%",
     margin: "0",
     padding: "0.5rem",
     minHeight: "100vh",
@@ -617,7 +616,6 @@ const styles = {
     top: "0",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     overflowX: "hidden"
   },
   headerSection: {

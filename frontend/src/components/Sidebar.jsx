@@ -69,14 +69,15 @@ export default function Sidebar() {
           position: fixed;
           top: 60px;
           left: 0;
-          width: 220px;
+          width: 200px;
           height: calc(100vh - 60px);
           background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-          border-right: 1px solid #404040;
+          border-right: 2px solid #404040;
           display: flex;
           flex-direction: column;
           z-index: 999;
           box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+          overflow-y: auto; /* Scroller pour le sidebar */
         }
 
         .sidebar-header {
