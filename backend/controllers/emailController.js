@@ -1,5 +1,6 @@
 const EmailService = require('../services/emailService');
 const User = require('../models/User');
+const NutritionPlan = require('../models/NutritionPlan');
 const cron = require('node-cron');
 
 // Planification des emails automatiques
@@ -24,7 +25,99 @@ class EmailController {
       await this.sendWorkoutReminders();
     });
 
+    // Vérification des nouveaux plans nutritionnels - tous les jours à 11h
+    cron.schedule('0 11 * * *', async () => {
+      console.log('📧 Vérification des nouveaux plans nutritionnels...');
+      await this.checkNewNutritionPlans();
+    });
+
+    // Motivation quotidienne - tous les jours à 7h
+    cron.schedule('0 7 * * *', async () => {
+      console.log('📧 Envoi des emails de motivation quotidienne...');
+      await this.sendDailyMotivation();
+    });
+
     console.log('✅ Tâches d\'emails automatiques initialisées');
+  }
+
+  // Vérifier les nouveaux plans nutritionnels
+  static async checkNewNutritionPlans() {
+    try {
+      const users = await User.find({ emailNotifications: true });
+      
+      for (const user of users) {
+        // Vérifier si l'utilisateur a un nouveau plan nutritionnel créé récemment
+        const recentNutritionPlan = await NutritionPlan.findOne({
+          userId: user._id,
+          createdAt: {
+            $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Dernières 24h
+          }
+        });
+
+        if (recentNutritionPlan) {
+          await EmailService.sendNewNutritionPlan(user._id, {
+            planName: recentNutritionPlan.name || 'Plan personnalisé',
+            calories: recentNutritionPlan.calories || '2000',
+            duration: recentNutritionPlan.duration || '7 jours',
+            meals: recentNutritionPlan.meals?.length || 3
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erreur vérification plans nutritionnels:', error);
+    }
+  }
+
+  // Envoyer la motivation quotidienne
+  static async sendDailyMotivation() {
+    try {
+      const users = await User.find({ emailNotifications: true });
+      
+      for (const user of users) {
+        const motivationQuote = this.getRandomMotivationQuote();
+        await EmailService.sendDailyMotivation(user._id, {
+          userName: user.name,
+          quote: motivationQuote.quote,
+          author: motivationQuote.author,
+          tip: motivationQuote.tip
+        });
+      }
+    } catch (error) {
+      console.error('Erreur envoi motivation quotidienne:', error);
+    }
+  }
+
+  // Obtenir une citation de motivation aléatoire
+  static getRandomMotivationQuote() {
+    const quotes = [
+      {
+        quote: "Le seul échec est de ne pas essayer.",
+        author: "Chris Bradford",
+        tip: "Aujourd'hui, concentrez-vous sur la progression, pas la perfection."
+      },
+      {
+        quote: "Votre corps peut supporter presque tout. C'est votre esprit que vous devez convaincre.",
+        author: "Inconnu",
+        tip: "Commencez petit, progressez chaque jour."
+      },
+      {
+        quote: "La discipline est le pont entre les objectifs et les accomplissements.",
+        author: "Jim Rohn",
+        tip: "Fixez-vous un objectif réalisable pour aujourd'hui."
+      },
+      {
+        quote: "Le succès est la somme de petits efforts répétés jour après jour.",
+        author: "Robert Collier",
+        tip: "Chaque entraînement compte, même les plus courts."
+      },
+      {
+        quote: "Ne vous comparez pas aux autres. Soyez la meilleure version de vous-même.",
+        author: "Inconnu",
+        tip: "Célébrez vos progrès, même les plus petits."
+      }
+    ];
+    
+    return quotes[Math.floor(Math.random() * quotes.length)];
   }
 
   // Vérifier les utilisateurs inactifs

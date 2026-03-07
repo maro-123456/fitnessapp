@@ -98,11 +98,11 @@ export default function Exercises() {
         <div style={styles.filterButtons}>
           {[
             { value: "all", label: "Tous", icon: "🏋️" },
-            { value: "chest", label: "Pectoraux", icon: "💪" },
-            { value: "back", label: "Dos", icon: "🔙" },
-            { value: "legs", label: "Jambes", icon: "🦵" },
-            { value: "arms", label: "Bras", icon: "💪" },
-            { value: "abs", label: "Abdos", icon: "🎯" }
+            { value: "cardio", label: "Cardio", icon: "🏃" },
+            { value: "strength", label: "Musculation", icon: "💪" },
+            { value: "flexibility", label: "Flexibilité", icon: "🧘" },
+            { value: "crossfit", label: "CrossFit", icon: "🏋️" },
+            { value: "bodyweight", label: "Poids Corporel", icon: "🤸" }
           ].map((c) => (
             <button
               key={c.value}
