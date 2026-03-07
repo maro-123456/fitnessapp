@@ -1,0 +1,44 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Layout from "./components/Layout";
+import Dashboard from "./pages/Dashboard";
+import Exercises from "./pages/Exercises";
+import NutritionPlans from "./pages/NutritionPlans";
+import ProgressChart from "./pages/ProgressChart";
+import Profile from "./pages/Profile";
+import { AuthProvider } from "./contexts/AuthContext";
+
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Layout />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="exercises" element={<Exercises />} />
+            <Route path="nutrition" element={<NutritionPlans />} />
+            <Route path="progress" element={<ProgressChart />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
