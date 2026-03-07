@@ -205,7 +205,8 @@ const styles = {
     minHeight: "100vh",
     position: "relative",
     left: "0",
-    top: "0"
+    top: "0",
+    overflowX: "hidden"
   },
   
   header: {

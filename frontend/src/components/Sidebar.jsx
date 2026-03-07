@@ -9,6 +9,8 @@ export default function Sidebar() {
     { path: "/dashboard", icon: "🏠", label: "Accueil" },
     { path: "/dashboard/exercises", icon: "🏋️", label: "Exercices" },
     { path: "/dashboard/nutrition", icon: "🥗", label: "Nutrition" },
+    { path: "/dashboard/gyms", icon: "🗺️", label: "Salles de sport" },
+    { path: "/dashboard/emails", icon: "📧", label: "Emails coaching" },
     { path: "/dashboard/progress", icon: "📈", label: "Progression" },
     { path: "/dashboard/profile", icon: "👤", label: "Profil" },
   ];

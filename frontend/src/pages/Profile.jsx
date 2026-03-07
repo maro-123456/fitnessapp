@@ -617,7 +617,8 @@ const styles = {
     top: "0",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    overflowX: "hidden"
   },
   headerSection: {
     background: "rgba(45, 45, 45, 0.8)",

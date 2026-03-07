@@ -30,13 +30,13 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="welcome-section">
-          <h1>Bienvenue, <span className="highlight">{user?.name}</span> 👋</h1>
+      <header>
+        <div className="welcomeSection">
+          <h1 className="title">Bienvenue, <span className="highlight">{user?.name}</span> 👋</h1>
           <p className="subtitle">Voici votre tableau de bord personnel</p>
         </div>
-        <div className="user-avatar">
-          <div className="avatar-circle">
+        <div className="userAvatar">
+          <div className="avatarCircle">
             {user?.name?.charAt(0).toUpperCase()}
           </div>
         </div>
@@ -46,12 +46,8 @@ export default function Dashboard() {
         {stats.map((stat) => (
           <div 
             key={stat.id}
-            className={`stat-card ${activeCard === stat.id ? 'active' : ''}`}
+            className="stat-card"
             onClick={() => setActiveCard(activeCard === stat.id ? null : stat.id)}
-            style={{ 
-              '--card-color': stat.color,
-              transform: activeCard === stat.id ? 'translateY(-5px)' : 'none'
-            }}
           >
             <div className="card-icon" style={{ backgroundColor: `${stat.color}20` }}>
               {stat.icon}
@@ -82,7 +78,7 @@ export default function Dashboard() {
       </div>
 
       <div className="progress-section">
-        <h2>Votre progression</h2>
+        <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}>📈 Votre progression</h2>
         <div className="progress-chart">
           <div className="progress-bar">
             <div 
@@ -92,56 +88,70 @@ export default function Dashboard() {
             ></div>
           </div>
           <div className="progress-labels">
-            <span>0%</span>
-            <span className="current-progress">65% atteint</span>
-            <span>100%</span>
+            <span style={{ color: "#a1a1a1", fontSize: "0.9rem" }}>0%</span>
+            <span className="current-progress" style={{ color: "#6366f1", fontWeight: "600" }}>65% atteint</span>
+            <span style={{ color: "#a1a1a1", fontSize: "0.9rem" }}>100%</span>
           </div>
         </div>
       </div>
 
       <style jsx>{`
         .dashboard-container {
-          max-width: 1200px;
-          margin: 0 0 0 220px;
-          padding: 2rem;
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          width: calc(100vw - 220px);
+          margin-left: 220px;
+          margin: 0;
+          padding: 1rem;
+          background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
           min-height: 100vh;
+          position: relative;
+          left: 0;
+          top: 0;
+          overflow-x: hidden;
         }
-
-        .dashboard-header {
+        
+        header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 3rem;
-          background: white;
-          padding: 2rem;
+          margin-bottom: 1.5rem;
+          background: #2d2d2d;
+          padding: 1rem;
           border-radius: 20px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          border: 1px solid #404040;
           animation: slideDown 0.6s ease-out;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
         }
-
-        .welcome-section h1 {
+        
+        .welcomeSection {
+          flex: 1;
+        }
+        
+        .title {
           font-size: 2.5rem;
-          color: #1a1a1a;
+          color: #ffffff;
           margin: 0;
+          font-weight: 700;
         }
-
+        
         .highlight {
           color: #6366f1;
           font-weight: 700;
         }
-
+        
         .subtitle {
-          color: #6b7280;
+          color: #a1a1a1;
           margin-top: 0.5rem;
           font-size: 1.1rem;
         }
-
-        .user-avatar {
+        
+        .userAvatar {
           position: relative;
         }
-
-        .avatar-circle {
+        
+        .avatarCircle {
           width: 80px;
           height: 80px;
           background: linear-gradient(135deg, #6366f1, #8b5cf6);
@@ -156,144 +166,146 @@ export default function Dashboard() {
           transition: transform 0.3s ease;
           cursor: pointer;
         }
-
-        .avatar-circle:hover {
+        
+        .avatarCircle:hover {
           transform: scale(1.05);
         }
-
+        
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 1.5rem;
-          margin-bottom: 3rem;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 16px;
+          animation: fadeIn 0.5s ease-in;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
         }
-
+        
         .stat-card {
-          background: white;
+          background: #2d2d2d;
           border-radius: 16px;
-          padding: 1.5rem;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          position: relative;
           overflow: hidden;
-          border: 2px solid transparent;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+          transition: all 0.3s ease;
+          border: 1px solid #404040;
+          cursor: pointer;
+          padding: 1.5rem;
         }
-
+        
         .stat-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-          border-color: var(--card-color);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(0,0,0,0.4);
         }
-
-        .stat-card.active {
-          border-color: var(--card-color);
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 4px;
-          background: var(--card-color);
-          transform: scaleX(0);
-          transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover::before,
-        .stat-card.active::before {
-          transform: scaleX(1);
-        }
-
+        
         .card-icon {
           width: 60px;
-          height: 60px;
+          height: 60px,
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 2rem;
+          font-size: 1.5rem;
           margin-bottom: 1rem;
           transition: transform 0.3s ease;
         }
-
+        
         .stat-card:hover .card-icon {
           transform: scale(1.1);
         }
-
-        .card-content h3 {
-          color: #374151;
-          margin: 0 0 0.5rem 0;
-          font-size: 1.1rem;
-          font-weight: 600;
+        
+        .card-content {
+          flex: 1;
         }
-
+        
         .card-value {
-          font-size: 2rem;
+          font-size: 1.8rem;
           font-weight: 700;
-          color: #1a1a1a;
-          margin: 0.5rem 0;
+          color: #ffffff;
+          margin: 0 0 10px 0;
         }
-
+        
         .card-desc {
-          color: #6b7280;
-          font-size: 0.9rem;
-          margin: 0.5rem 0 0 0;
+          color: #a1a1a1;
+          font-size: 1rem;
+          margin: 0 0 20px 0;
         }
-
+        
         .bmi-indicator {
-          margin-top: 1rem;
-          padding-top: 1rem;
-          border-top: 1px solid #e5e7eb;
-        }
-
-        .bmi-bar {
-          height: 8px;
-          background: #e5e7eb;
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 1px solid #404040;
           border-radius: 4px;
           overflow: hidden;
-          margin-bottom: 0.5rem;
+          margin-bottom: 10px;
         }
-
+        
+        .bmi-bar {
+          height: 8px;
+          background: #404040;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 10px;
+        }
+        
         .bmi-fill {
           height: 100%;
-          transition: width 0.6s ease;
+          background: linear-gradient(90deg, #6366f1, #8b5cf6);
+          border-radius: 6px;
+          position: relative;
+          transition: width 1s ease-in-out;
         }
-
-        .bmi-category {
+        
+        .bmi-fill::after {
+          content: attr(data-progress);
+          position: absolute;
+          right: -40px;
+          top: -30px;
+          background: #6366f1;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
           font-size: 0.8rem;
           font-weight: 600;
-          color: #4b5563;
         }
-
+        
+        .bmi-category {
+          font-size: 0.8rem;
+          font-weight: 600,
+          color: #a1a1a1;
+        }
+        
         .progress-section {
-          background: white;
-          padding: 2rem;
+          background: #2d2d2d;
+          padding: 1rem;
           border-radius: 20px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          border: 1px solid #404040;
           animation: fadeIn 0.8s ease-out;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
         }
-
+        
         .progress-section h2 {
-          color: #1a1a1a;
-          margin-bottom: 1.5rem;
+          color: #ffffff;
+          margin-bottom: 1rem;
+          font-size: 1.5rem;
+          font-weight: 700;
         }
-
+        
         .progress-chart {
           margin-top: 1rem;
         }
-
+        
         .progress-bar {
           height: 12px;
-          background: #e5e7eb;
+          background: #404040;
           border-radius: 6px;
           overflow: hidden;
           position: relative;
         }
-
+        
         .progress-fill {
           height: 100%;
           background: linear-gradient(90deg, #6366f1, #8b5cf6);
@@ -301,7 +313,7 @@ export default function Dashboard() {
           position: relative;
           transition: width 1s ease-in-out;
         }
-
+        
         .progress-fill::after {
           content: attr(data-progress);
           position: absolute;
@@ -314,20 +326,20 @@ export default function Dashboard() {
           font-size: 0.8rem;
           font-weight: 600;
         }
-
+        
         .progress-labels {
           display: flex;
           justify-content: space-between;
           margin-top: 0.5rem;
-          color: #6b7280;
+          color: #a1a1a1,
           font-size: 0.9rem;
         }
-
+        
         .current-progress {
           color: #6366f1;
           font-weight: 600;
         }
-
+        
         @keyframes slideDown {
           from {
             opacity: 0;
@@ -338,31 +350,33 @@ export default function Dashboard() {
             transform: translateY(0);
           }
         }
-
+        
         @keyframes fadeIn {
           from {
             opacity: 0;
+            transform: translateY(20px);
           }
           to {
             opacity: 1;
+            transform: translateY(0);
           }
         }
-
+        
         @media (max-width: 768px) {
-          .dashboard-header {
+          header {
             flex-direction: column;
             text-align: center;
             gap: 1.5rem;
           }
-
-          .welcome-section h1 {
+          
+          .title {
             font-size: 2rem;
           }
-
+          
           .stats-grid {
             grid-template-columns: 1fr;
           }
-
+          
           .dashboard-container {
             padding: 1rem;
           }

@@ -2,17 +2,27 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const EmailController = require('./controllers/emailController');
 
 const app = express();
 connectDB();
+
+// Initialiser les emails automatiques
+EmailController.initializeScheduledEmails();
 
 app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/exercises", require("./routes/exerciseRoutes"));
-app.use("/api/nutrition", require("./routes/nutritionRoutes"));
+const authRoutes = require('./routes/authRoutes');
+const exerciseRoutes = require('./routes/exerciseRoutes');
+const nutritionRoutes = require('./routes/nutritionRoutes');
+const emailRoutes = require('./routes/emailRoutes');
+
+app.use("/api/auth", authRoutes);
+app.use("/api/exercises", exerciseRoutes);
+app.use("/api/nutrition", nutritionRoutes);
+app.use("/api/email", emailRoutes);
 // Ajouter les routes exercises, nutrition, progress, admin
 
 const PORT = process.env.PORT || 5000;

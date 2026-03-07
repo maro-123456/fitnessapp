@@ -1,40 +1,50 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import api from "../services/api";
 
 // Styles modernes et professionnels pour ProgressChart
 const styles = {
   container: {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: "0 20px 40px",
+    width: "calc(100vw - 220px)",
+    marginLeft: "220px",
+    margin: "0",
+    padding: "1rem",
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+    position: "relative",
+    left: "0",
+    top: "0",
+    overflowX: "hidden"
   },
   
   // Header Section
   headerSection: {
-    background: "rgba(255, 255, 255, 0.1)",
+    background: "rgba(45, 45, 45, 0.8)",
     backdropFilter: "blur(10px)",
-    padding: "60px 0",
-    margin: "0 -20px 40px",
+    padding: "2rem 0",
+    margin: "0 -1rem 2rem",
     textAlign: "center",
     position: "relative",
-    overflow: "hidden"
+    overflow: "hidden",
+    border: "1px solid #404040",
+    borderRadius: "20px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   headerContent: {
     position: "relative",
     zIndex: 1
   },
   mainTitle: {
-    fontSize: "3rem",
+    fontSize: "2.5rem",
     fontWeight: "800",
-    color: "white",
-    margin: "0 0 15px 0",
+    color: "#ffffff",
+    margin: "0 0 10px 0",
     textShadow: "0 4px 8px rgba(0,0,0,0.3)"
   },
   subtitle: {
     fontSize: "1.3rem",
-    color: "rgba(255,255,255,0.9)",
+    color: "#a1a1a1",
     margin: "0",
     maxWidth: "600px",
     marginLeft: "auto",
@@ -43,183 +53,203 @@ const styles = {
   
   // Stats Section
   statsSection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   statsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "20px"
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "16px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   statCard: {
-    background: "white",
-    padding: "25px",
+    background: "#2d2d2d",
+    padding: "1.5rem",
     borderRadius: "20px",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
     display: "flex",
     alignItems: "center",
-    gap: "20px",
-    transition: "transform 0.3s ease"
+    gap: "1rem",
+    transition: "transform 0.3s ease",
+    border: "1px solid #404040"
   },
   statIcon: {
-    fontSize: "2.5rem",
-    width: "60px",
-    height: "60px",
+    fontSize: "2rem",
+    width: "50px",
+    height: "50px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    borderRadius: "15px"
+    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+    borderRadius: "10px"
   },
   statContent: {
     flex: 1
   },
   statValue: {
     display: "block",
-    fontSize: "1.8rem",
+    fontSize: "1.5rem",
     fontWeight: "700",
-    color: "#2d3436",
+    color: "#ffffff",
     marginBottom: "5px"
   },
   statLabel: {
     fontSize: "0.9rem",
-    color: "#636e72",
+    color: "#a1a1a1",
     fontWeight: "500"
   },
   
   // Controls Section
   controlsSection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   controlsContainer: {
-    background: "white",
-    padding: "30px",
+    background: "#2d2d2d",
+    padding: "1rem",
     borderRadius: "20px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+    border: "1px solid #404040",
     display: "flex",
-    gap: "30px",
+    gap: "1.5rem",
     alignItems: "center",
     justifyContent: "center",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   controlGroup: {
     display: "flex",
     flexDirection: "column",
-    gap: "10px"
+    gap: "8px"
   },
   controlLabel: {
     fontSize: "0.9rem",
     fontWeight: "600",
-    color: "#2d3436"
+    color: "#e5e5e5"
   },
   select: {
-    padding: "12px 16px",
-    borderRadius: "10px",
-    border: "2px solid #e1e5e9",
-    fontSize: "1rem",
-    background: "white",
+    padding: "10px 14px",
+    borderRadius: "8px",
+    border: "2px solid #404040",
+    fontSize: "0.9rem",
+    background: "#1a1a1a",
+    color: "#ffffff",
     cursor: "pointer",
     transition: "border-color 0.3s ease",
-    minWidth: "200px"
+    minWidth: "180px"
   },
   
   // Charts Section
   chartsSection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   chartsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
-    gap: "30px"
+    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+    gap: "20px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   chartCard: {
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)"
+    boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
+    border: "1px solid #404040"
   },
   chartHeader: {
-    padding: "25px",
-    borderBottom: "1px solid #f1f3f4",
-    background: "#f8f9fa"
+    padding: "1.5rem",
+    borderBottom: "1px solid #404040",
+    background: "#1a1a1a"
   },
   chartTitle: {
-    fontSize: "1.3rem",
+    fontSize: "1.2rem",
     fontWeight: "700",
-    color: "#2d3436",
+    color: "#ffffff",
     margin: "0 0 5px 0"
   },
   chartSubtitle: {
-    fontSize: "0.9rem",
-    color: "#636e72",
+    fontSize: "0.8rem",
+    color: "#a1a1a1",
     margin: 0
   },
   chartContainer: {
-    padding: "25px",
+    padding: "1.5rem",
     height: "300px"
   },
   
   // Empty State
   emptyState: {
     textAlign: "center",
-    padding: "80px 20px",
-    background: "white",
+    padding: "60px 20px",
+    background: "#2d2d2d",
     borderRadius: "20px",
-    border: "2px dashed #dee2e6"
+    border: "2px dashed #404040",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   emptyIcon: {
-    fontSize: "4rem",
-    marginBottom: "20px"
+    fontSize: "3rem",
+    marginBottom: "1rem"
   },
   emptyTitle: {
-    fontSize: "1.5rem",
-    color: "#2d3436",
+    fontSize: "1.3rem",
+    color: "#ffffff",
     margin: "0 0 10px 0"
   },
   emptyText: {
-    fontSize: "1rem",
-    color: "#6c757d",
+    fontSize: "0.9rem",
+    color: "#a1a1a1",
     margin: 0
   },
   
   // Summary Section
   summarySection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   summaryCard: {
-    background: "white",
-    padding: "30px",
+    background: "#2d2d2d",
+    padding: "1.5rem",
     borderRadius: "20px",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)"
+    boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
+    border: "1px solid #404040",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   summaryTitle: {
-    fontSize: "1.5rem",
+    fontSize: "1.3rem",
     fontWeight: "700",
-    color: "#2d3436",
-    margin: "0 0 25px 0"
+    color: "#ffffff",
+    margin: "0 0 1rem 0"
   },
   summaryGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "20px"
+    gap: "16px"
   },
   summaryItem: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "15px",
-    background: "#f8f9fa",
+    padding: "1rem",
+    background: "#1a1a1a",
     borderRadius: "10px",
-    border: "1px solid #e9ecef"
+    border: "1px solid #404040"
   },
   summaryLabel: {
     fontSize: "0.9rem",
-    color: "#636e72",
+    color: "#a1a1a1",
     fontWeight: "500"
   },
   summaryValue: {
-    fontSize: "1.1rem",
+    fontSize: "1rem",
     fontWeight: "600",
-    color: "#2d3436"
+    color: "#ffffff"
   },
   
   // Loading and Error States
@@ -228,40 +258,42 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "100px 20px",
+    padding: "60px 20px",
     textAlign: "center"
   },
   spinner: {
-    width: "50px",
-    height: "50px",
-    border: "4px solid rgba(255,255,255,0.3)",
-    borderTop: "4px solid white",
+    width: "40px",
+    height: "40px",
+    border: "4px solid #404040",
+    borderTop: "4px solid #6366f1",
     borderRadius: "50%",
     animation: "spin 1s linear infinite",
-    marginBottom: "20px"
+    marginBottom: "16px"
   },
   loadingText: {
-    fontSize: "1.1rem",
-    color: "white",
+    color: "#a1a1a1",
+    fontSize: "16px",
     margin: 0
   },
   errorContainer: {
     textAlign: "center",
-    padding: "60px 20px",
-    background: "rgba(255,255,255,0.1)",
-    backdropFilter: "blur(10px)",
-    border: "1px solid rgba(255,255,255,0.2)",
-    borderRadius: "15px",
-    margin: "40px 0"
+    padding: "40px 20px",
+    background: "#991b1b",
+    border: "1px solid #7f1d1d",
+    borderRadius: "12px",
+    margin: "20px 0",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   errorText: {
-    color: "white",
-    fontSize: "1.1rem",
-    marginBottom: "20px"
+    color: "#ffffff",
+    fontSize: "16px",
+    marginBottom: "16px"
   },
   retryBtn: {
-    background: "white",
-    color: "#667eea",
+    background: "#2d2d2d",
+    color: "#ffffff",
     border: "none",
     padding: "12px 24px",
     borderRadius: "8px",
@@ -278,8 +310,7 @@ export default function ProgressChart() {
   const [selectedMetric, setSelectedMetric] = useState("all");
   const [timeRange, setTimeRange] = useState("30");
 
-  // Données de démonstration si l'API ne retourne rien
-  const demoData = [
+  const demoData = useMemo(() => [
     { date: "01/01", weight: 75.2, imc: 24.5, performance: 85, calories: 2200, steps: 8000 },
     { date: "08/01", weight: 74.8, imc: 24.3, performance: 87, calories: 2150, steps: 9500 },
     { date: "15/01", weight: 74.5, imc: 24.2, performance: 88, calories: 2100, steps: 10200 },
@@ -288,13 +319,9 @@ export default function ProgressChart() {
     { date: "05/02", weight: 73.5, imc: 23.8, performance: 93, calories: 1980, steps: 12500 },
     { date: "12/02", weight: 73.2, imc: 23.6, performance: 94, calories: 1950, steps: 13000 },
     { date: "19/02", weight: 72.9, imc: 23.5, performance: 95, calories: 1920, steps: 13500 }
-  ];
+  ], []);
 
-  useEffect(() => {
-    fetchProgressData();
-  }, []);
-
-  const fetchProgressData = async () => {
+  const fetchProgressData = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get("/progress");
@@ -321,7 +348,11 @@ export default function ProgressChart() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [demoData]);
+
+  useEffect(() => {
+    fetchProgressData();
+  }, [fetchProgressData]);
 
   // Filtrer les données selon la plage de temps
   const getFilteredData = () => {
@@ -345,42 +376,6 @@ export default function ProgressChart() {
     const avgPerformance = Math.round(filteredData.reduce((sum, d) => sum + d.performance, 0) / filteredData.length);
     
     return { weightChange, performanceChange, avgPerformance };
-  };
-
-  // Obtenir la couleur selon la métrique
-  const getMetricColor = (metric) => {
-    switch (metric) {
-      case "weight": return "#8884d8";
-      case "imc": return "#82ca9d";
-      case "performance": return "#ff7300";
-      case "calories": return "#00c49f";
-      case "steps": return "#ffbb28";
-      default: return "#8884d8";
-    }
-  };
-
-  // Obtenir l'icône selon la métrique
-  const getMetricIcon = (metric) => {
-    switch (metric) {
-      case "weight": return "⚖️";
-      case "imc": return "📊";
-      case "performance": return "🎯";
-      case "calories": return "🔥";
-      case "steps": return "👟";
-      default: return "📈";
-    }
-  };
-
-  // Obtenir le label selon la métrique
-  const getMetricLabel = (metric) => {
-    switch (metric) {
-      case "weight": return "Poids (kg)";
-      case "imc": return "IMC";
-      case "performance": return "Performance (%)";
-      case "calories": return "Calories";
-      case "steps": return "Pas";
-      default: return "Métrique";
-    }
   };
 
   const stats = getStats();

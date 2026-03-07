@@ -364,36 +364,47 @@ export default function NutritionPlans() {
 // Styles modernes et améliorés
 const styles = {
   container: {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: "0 20px 40px",
+    width: "calc(100vw - 220px)",
+    marginLeft: "220px",
+    margin: "0",
+    padding: "1rem",
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)"
+    background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+    position: "relative",
+    left: "0",
+    top: "0",
+    overflowX: "hidden"
   },
   
   // Header Section
   headerSection: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    padding: "60px 0",
-    margin: "0 -20px 40px",
+    background: "rgba(45, 45, 45, 0.8)",
+    backdropFilter: "blur(10px)",
+    padding: "2rem 0",
+    margin: "0 -1rem 2rem",
     textAlign: "center",
     position: "relative",
-    overflow: "hidden"
+    overflow: "hidden",
+    border: "1px solid #404040",
+    borderRadius: "20px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   headerContent: {
     position: "relative",
     zIndex: 1
   },
   mainTitle: {
-    fontSize: "3rem",
+    fontSize: "2.5rem",
     fontWeight: "800",
-    color: "white",
-    margin: "0 0 15px 0",
+    color: "#ffffff",
+    margin: "0 0 10px 0",
     textShadow: "0 4px 8px rgba(0,0,0,0.3)"
   },
   subtitle: {
     fontSize: "1.3rem",
-    color: "rgba(255,255,255,0.9)",
+    color: "#a1a1a1",
     margin: "0",
     maxWidth: "600px",
     marginLeft: "auto",
@@ -402,21 +413,25 @@ const styles = {
   
   // Filter Section
   filterSection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   filterContainer: {
-    background: "white",
-    padding: "30px",
+    background: "#2d2d2d",
+    padding: "1rem",
     borderRadius: "20px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-    textAlign: "center"
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+    border: "1px solid #404040",
+    textAlign: "center",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   filterLabel: {
     display: "block",
-    fontSize: "1.1rem",
+    fontSize: "1rem",
     fontWeight: "600",
-    color: "#2d3436",
-    marginBottom: "20px"
+    color: "#e5e5e5",
+    marginBottom: "1rem"
   },
   filterButtons: {
     display: "flex",
@@ -425,16 +440,16 @@ const styles = {
     justifyContent: "center"
   },
   filterBtn: {
-    padding: "12px 20px",
-    borderRadius: "12px",
+    padding: "10px 16px",
+    borderRadius: "10px",
     cursor: "pointer",
     fontWeight: "600",
-    fontSize: "1rem",
+    fontSize: "0.9rem",
     transition: "all 0.3s ease",
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    minWidth: "140px",
+    gap: "6px",
+    minWidth: "120px",
     justifyContent: "center"
   },
   filterIcon: {
@@ -443,12 +458,15 @@ const styles = {
   
   // Stats Section
   statsSection: {
-    marginBottom: "40px"
+    marginBottom: "1.5rem"
   },
   statsContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "20px"
+    gap: "16px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   statItem: {
     background: "white",
@@ -477,54 +495,55 @@ const styles = {
   },
   plansGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
-    gap: "30px",
-    animation: "fadeIn 0.6s ease-in"
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   planCard: {
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
     transition: "all 0.3s ease",
-    border: "1px solid #f1f3f4",
-    display: "flex",
-    flexDirection: "column"
+    border: "1px solid #404040",
+    cursor: "pointer"
   },
-  cardHeader: {
-    padding: "25px"
+  planHeader: {
+    padding: "1.5rem",
+    borderBottom: "1px solid #404040",
+    background: "#1a1a1a"
   },
-  cardTop: {
+  planTitle: {
+    fontSize: "1.3rem",
+    fontWeight: "700",
+    color: "#ffffff",
+    margin: "0 0 0.5rem 0"
+  },
+  planDescription: {
+    color: "#a1a1a1",
+    fontSize: "0.9rem",
+    margin: "0",
+    lineHeight: "1.4"
+  },
+  planMeta: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: "15px"
+    alignItems: "center",
+    gap: "10px",
+    flexWrap: "wrap"
   },
-  cardTitle: {
+  planPrice: {
     fontSize: "1.5rem",
     fontWeight: "700",
-    color: "#2d3436",
-    margin: 0,
-    flex: 1,
-    lineHeight: "1.3"
-  },
-  objectiveBadge: {
-    padding: "6px 12px",
-    borderRadius: "8px",
-    fontSize: "0.8rem",
-    fontWeight: "600",
-    color: "white",
-    whiteSpace: "nowrap"
-  },
-  description: {
-    color: "#636e72",
-    fontSize: "1rem",
-    lineHeight: "1.6",
+    color: "#ffffff",
     margin: "0"
   },
-  cardBody: {
-    padding: "0 25px 20px",
-    flex: 1
+  planDuration: {
+    color: "#a1a1a1",
+    fontSize: "0.9rem",
+    margin: "0"
   },
   infoGrid: {
     display: "grid",
@@ -644,9 +663,9 @@ const styles = {
   emptyState: {
     textAlign: "center",
     padding: "80px 20px",
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
-    border: "2px dashed #dee2e6"
+    border: "2px dashed #404040"
   },
   emptyIcon: {
     fontSize: "4rem",
@@ -663,14 +682,13 @@ const styles = {
     marginBottom: "25px"
   },
   resetBtn: {
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "#6366f1",
     color: "white",
     border: "none",
     padding: "12px 24px",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
-    fontSize: "1rem",
     transition: "transform 0.2s ease"
   },
   
@@ -689,7 +707,7 @@ const styles = {
     padding: "20px"
   },
   modal: {
-    background: "white",
+    background: "#2d2d2d",
     borderRadius: "20px",
     maxWidth: "800px",
     maxHeight: "90vh",
@@ -702,8 +720,8 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "25px",
-    borderBottom: "1px solid #e9ecef",
-    background: "#f8f9fa"
+    borderBottom: "1px solid #404040",
+    background: "#1a1a1a"
   },
   modalTitle: {
     margin: 0,
@@ -819,45 +837,310 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: "100px 20px",
+    padding: "60px 20px",
     textAlign: "center"
   },
   spinner: {
-    width: "50px",
-    height: "50px",
-    border: "4px solid #f3f3f3",
-    borderTop: "4px solid #667eea",
+    width: "40px",
+    height: "40px",
+    border: "4px solid #404040",
+    borderTop: "4px solid #6366f1",
     borderRadius: "50%",
     animation: "spin 1s linear infinite",
-    marginBottom: "20px"
+    marginBottom: "16px"
   },
   loadingText: {
-    fontSize: "1.1rem",
-    color: "#636e72",
-    margin: 0
+    color: "#a1a1a1",
+    fontSize: "16px"
   },
   errorContainer: {
     textAlign: "center",
-    padding: "60px 20px",
-    background: "#fff5f5",
-    border: "1px solid #fed7d7",
-    borderRadius: "15px",
-    margin: "40px 0"
+    padding: "40px 20px",
+    background: "#991b1b",
+    border: "1px solid #7f1d1d",
+    borderRadius: "12px",
+    margin: "20px 0",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
   },
   errorText: {
-    color: "#c53030",
-    fontSize: "1.1rem",
-    marginBottom: "20px"
+    color: "#ffffff",
+    fontSize: "16px",
+    marginBottom: "16px"
   },
   retryBtn: {
-    background: "#4299e1",
+    background: "#6366f1",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600"
+  },
+  emptyContainer: {
+    textAlign: "center",
+    padding: "60px 20px",
+    background: "#2d2d2d",
+    border: "2px dashed #404040",
+    borderRadius: "12px",
+    margin: "20px 0",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  emptyText: {
+    color: "#a1a1a1",
+    fontSize: "16px",
+    marginBottom: "20px"
+  },
+  resetBtn: {
+    background: "#6366f1",
     color: "white",
     border: "none",
     padding: "12px 24px",
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "600",
+    transition: "transform 0.2s ease"
+  },
+  planContent: {
+    padding: "1.5rem"
+  },
+  planFeatures: {
+    listStyle: "none",
+    padding: "0",
+    margin: "0"
+  },
+  featureItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px 0",
+    borderBottom: "1px solid #404040",
+    color: "#a1a1a1",
+    fontSize: "0.9rem"
+  },
+  featureIcon: {
     fontSize: "1rem"
+  },
+  featureText: {
+    flex: 1
+  },
+  planActions: {
+    display: "flex",
+    gap: "10px",
+    padding: "0 1.5rem"
+  },
+  viewBtn: {
+    flex: 1,
+    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+    fontSize: "0.9rem",
+    transition: "all 0.3s ease"
+  },
+  pdfBtn: {
+    background: "#404040",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+    fontSize: "0.9rem",
+    transition: "all 0.3s ease"
+  },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: "rgba(0, 0, 0, 0.8)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000
+  },
+  modal: {
+    background: "#2d2d2d",
+    borderRadius: "20px",
+    maxWidth: "800px",
+    width: "90%",
+    maxHeight: "90vh",
+    overflow: "auto",
+    border: "1px solid #404040"
+  },
+  modalHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "1.5rem",
+    borderBottom: "1px solid #404040"
+  },
+  modalTitle: {
+    color: "#ffffff",
+    fontSize: "1.5rem",
+    margin: "0",
+    fontWeight: "600"
+  },
+  closeBtn: {
+    background: "none",
+    border: "none",
+    color: "#a1a1a1",
+    fontSize: "1.5rem",
+    cursor: "pointer",
+    padding: "4px",
+    borderRadius: "4px",
+    transition: "all 0.3s ease"
+  },
+  modalContent: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "1.5rem",
+    padding: "1.5rem"
+  },
+  modalImage: {
+    width: "100%",
+    height: "200px",
+    objectFit: "cover",
+    borderRadius: "12px"
+  },
+  modalInfo: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem"
+  },
+  modalTitle: {
+    color: "#ffffff",
+    fontSize: "1.2rem",
+    margin: "0 0 0.5rem 0",
+    fontWeight: "600"
+  },
+  modalDescription: {
+    color: "#a1a1a1",
+    margin: "0 0 1rem 0",
+    lineHeight: "1.4"
+  },
+  modalPrice: {
+    color: "#6366f1",
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    margin: "0 0 1rem 0"
+  },
+  modalFeatures: {
+    color: "#ffffff",
+    margin: "0 0 1rem 0"
+  },
+  modalFeature: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px 0",
+    borderBottom: "1px solid #404040"
+  },
+  modalFeatureIcon: {
+    fontSize: "1rem"
+  },
+  modalFeatureText: {
+    flex: 1
+  },
+  modalActions: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "1rem"
+  },
+  downloadBtn: {
+    flex: 1,
+    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+    color: "white",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+    fontSize: "1rem",
+    transition: "all 0.3s ease"
+  },
+  closeModalBtn: {
+    flex: 1,
+    background: "#404040",
+    color: "white",
+    border: "none",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+    fontSize: "1rem",
+    transition: "all 0.3s ease"
+  },
+  loadingContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "60px 20px",
+    textAlign: "center"
+  },
+  loadingText: {
+    color: "#a1a1a1",
+    fontSize: "16px"
+  },
+  errorContainer: {
+    textAlign: "center",
+    padding: "40px 20px",
+    background: "#991b1b",
+    border: "1px solid #7f1d1d",
+    borderRadius: "12px",
+    margin: "20px 0",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  errorText: {
+    color: "#ffffff",
+    fontSize: "16px",
+    marginBottom: "16px"
+  },
+  retryBtn: {
+    background: "#6366f1",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600"
+  },
+  emptyContainer: {
+    textAlign: "center",
+    padding: "60px 20px",
+    background: "#2d2d2d",
+    border: "2px dashed #404040",
+    borderRadius: "12px",
+    margin: "20px 0",
+    maxWidth: "1400px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  emptyText: {
+    color: "#a1a1a1",
+    fontSize: "16px",
+    marginBottom: "20px"
+  },
+  resetBtn: {
+    background: "#6366f1",
+    color: "white",
+    border: "none",
+    padding: "12px 24px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "600",
+    transition: "transform 0.2s ease"
   }
 };
 
@@ -865,50 +1148,45 @@ const styles = {
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     
-    @media (max-width: 768px) {
-      .plans-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
-        gap: 20px !important;
-      }
-      
-      .filter-buttons {
-        justify-content: center;
-      }
-      
-      .filter-btn {
-        font-size: 0.9rem;
-        padding: 10px 16px;
-        min-width: 120px;
-      }
-      
-      .card-actions {
-        flex-direction: column;
-      }
-      
-      .main-title {
-        font-size: 2.2rem !important;
-      }
-      
-      .subtitle {
-        font-size: 1.1rem !important;
-      }
-      
-      .header-section {
-        padding: 40px 0 !important;
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    @media (max-width: 480px) {
-      .plans-grid {
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .plan-card:hover {
+      transform: translateY(-4px) !important;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4) !important;
+    }
+    
+    .view-btn:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    .pdf-btn:hover {
+      transform: translateY(-2px) !important;
+      background-color: #555555 !important;
+    }
+    
+    .reset-btn:hover {
+      transform: translateY(-2px) !important;
+      background-color: #45a049 !important;
+    }
+    
+    .filter-btn:hover {
+      transform: translateY(-2px) !important;
+      color: #ffffff !important;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3) !important;
         grid-template-columns: 1fr !important;
       }
       

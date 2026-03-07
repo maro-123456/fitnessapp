@@ -7,6 +7,8 @@ import Exercises from "./pages/Exercises";
 import NutritionPlans from "./pages/NutritionPlans";
 import ProgressChart from "./pages/ProgressChart";
 import Profile from "./pages/Profile";
+import GymMap from "./pages/GymMap";
+import EmailCoaching from "./pages/EmailCoaching";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function PrivateRoute({ children }) {
@@ -34,6 +36,8 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="exercises" element={<Exercises />} />
             <Route path="nutrition" element={<NutritionPlans />} />
+            <Route path="gyms" element={<GymMap />} />
+            <Route path="emails" element={<EmailCoaching />} />
             <Route path="progress" element={<ProgressChart />} />
             <Route path="profile" element={<Profile />} />
           </Route>
