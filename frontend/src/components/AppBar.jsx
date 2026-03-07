@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function AppBar() {
   const navigate = useNavigate();
+  const { language, changeLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [time, setTime] = useState(new Date());
@@ -64,6 +66,19 @@ export default function AppBar() {
 
         <div className="app-bar-right">
           <div className="user-actions">
+            {/* Sélecteur de langue */}
+            <div className="language-selector">
+              <select 
+                value={language} 
+                onChange={(e) => changeLanguage(e.target.value)}
+                className="language-select"
+              >
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="ar">🇸🇦 العربية</option>
+              </select>
+            </div>
+            
             <button 
               className="notification-btn"
               onClick={() => navigate("/notifications")}
@@ -90,7 +105,7 @@ export default function AppBar() {
                 aria-label="Déconnexion"
               >
                 <span className="logout-icon">🚪</span>
-                <span className="logout-text">Déconnexion</span>
+                <span className="logout-text">{t('logout')}</span>
               </button>
             </div>
           </div>
@@ -224,6 +239,38 @@ export default function AppBar() {
           display: flex;
           align-items: center;
           gap: 20px;
+        }
+
+        .language-selector {
+          position: relative;
+        }
+
+        .language-select {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 8px 12px;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          outline: none;
+        }
+
+        .language-select:hover {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .language-select:focus {
+          border-color: #6366f1;
+          box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .language-select option {
+          background: #2d2d2d;
+          color: white;
+          padding: 8px;
         }
 
         .notification-btn,

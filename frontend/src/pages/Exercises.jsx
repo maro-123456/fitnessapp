@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../services/api"; // axios instance
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Exercises() {
+  const { t } = useLanguage();
   const [exercises, setExercises] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [category, setCategory] = useState("all");
@@ -83,8 +85,8 @@ export default function Exercises() {
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.welcomeSection}>
-          <h1 style={styles.title}>🏋️ Bibliothèque d'exercices</h1>
-          <p style={styles.subtitle}>Explorez notre collection complète d'exercices</p>
+          <h1 style={styles.title}>🏋️ {t('exerciseLibrary')}</h1>
+          <p style={styles.subtitle}>{t('exploreCollection')}</p>
         </div>
         <div style={styles.userAvatar}>
           <div style={styles.avatarCircle}>
@@ -94,15 +96,15 @@ export default function Exercises() {
       </header>
 
       <div style={styles.filtersSection}>
-        <span style={styles.filterLabel}>Filtrer par catégorie:</span>
+        <span style={styles.filterLabel}>{t('filterByCategory')}:</span>
         <div style={styles.filterButtons}>
           {[
-            { value: "all", label: "Tous", icon: "🏋️" },
-            { value: "cardio", label: "Cardio", icon: "🏃" },
-            { value: "strength", label: "Musculation", icon: "💪" },
-            { value: "flexibility", label: "Flexibilité", icon: "🧘" },
-            { value: "crossfit", label: "CrossFit", icon: "🏋️" },
-            { value: "bodyweight", label: "Poids Corporel", icon: "🤸" }
+            { value: "all", label: t('all'), icon: "🏋️" },
+            { value: "cardio", label: t('cardio'), icon: "🏃" },
+            { value: "strength", label: t('strength'), icon: "💪" },
+            { value: "flexibility", label: t('flexibility'), icon: "🧘" },
+            { value: "crossfit", label: t('crossfit'), icon: "🏋️" },
+            { value: "bodyweight", label: t('bodyweight'), icon: "🤸" }
           ].map((c) => (
             <button
               key={c.value}
@@ -126,21 +128,21 @@ export default function Exercises() {
       {loading && (
         <div style={styles.loadingContainer}>
           <div style={styles.spinner}></div>
-          <p style={styles.loadingText}>Chargement des exercices...</p>
+          <p style={styles.loadingText}>{t('loading')}</p>
         </div>
       )}
 
       {error && (
         <div style={styles.errorContainer}>
           <p style={styles.errorText}>⚠️ {error}</p>
-          <button onClick={fetchExercises} style={styles.retryBtn}>Réessayer</button>
+          <button onClick={fetchExercises} style={styles.retryBtn}>{t('retry')}</button>
         </div>
       )}
 
       {!loading && !error && filtered.length === 0 && (
         <div style={styles.emptyContainer}>
-          <p style={styles.emptyText}>🔍 Aucun exercice trouvé pour cette catégorie</p>
-          <button onClick={() => setCategory("all")} style={styles.resetBtn}>Voir tous les exercices</button>
+          <p style={styles.emptyText}>🔍 {t('noExercisesFound')}</p>
+          <button onClick={() => setCategory("all")} style={styles.resetBtn}>{t('seeAllExercises')}</button>
         </div>
       )}
 
@@ -322,7 +324,13 @@ const styles = {
     boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
     transition: "all 0.3s ease",
     border: "1px solid #404040",
-    cursor: "pointer"
+    cursor: "pointer",
+    transform: "translateY(0)",
+    position: "relative",
+    "&:hover": {
+      transform: "translateY(-5px)",
+      boxShadow: "0 12px 30px rgba(0,0,0,0.4)"
+    }
   },
   
   imageContainer: {

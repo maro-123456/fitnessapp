@@ -1,15 +1,17 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
+  const { t } = useLanguage();
   const [activeCard, setActiveCard] = useState(null);
 
   const stats = [
-    { id: 1, icon: "🎯", label: "Objectif", value: user?.goal, color: "#6366f1", desc: "Votre objectif de fitness" },
-    { id: 2, icon: "⚖️", label: "Poids", value: `${user?.weight} kg`, color: "#10b981", desc: "Poids actuel" },
-    { id: 3, icon: "📏", label: "Taille", value: `${user?.height} cm`, color: "#f59e0b", desc: "Votre taille" },
-    { id: 4, icon: "📊", label: "IMC", value: calculateBMI(user?.weight, user?.height), color: "#8b5cf6", desc: "Indice de masse corporelle" }
+    { id: 1, icon: "🎯", label: t('goal'), value: user?.goal, color: "#6366f1", desc: t('fitnessGoal') },
+    { id: 2, icon: "⚖️", label: t('weight'), value: `${user?.weight} kg`, color: "#10b981", desc: t('currentWeight') },
+    { id: 3, icon: "📏", label: t('height'), value: `${user?.height} cm`, color: "#f59e0b", desc: t('yourHeight') },
+    { id: 4, icon: "📊", label: t('bmi'), value: calculateBMI(user?.weight, user?.height), color: "#8b5cf6", desc: t('bmiDescription') }
   ];
 
   function calculateBMI(weight, height) {
@@ -32,8 +34,8 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <header>
         <div className="welcomeSection">
-          <h1 className="title">Bienvenue, <span className="highlight">{user?.name}</span> 👋</h1>
-          <p className="subtitle">Voici votre tableau de bord personnel</p>
+          <h1 className="title">{t('welcome')}, <span className="highlight">{user?.name}</span> 👋</h1>
+          <p className="subtitle">{t('dashboardSubtitle')}</p>
         </div>
         <div className="userAvatar">
           <div className="avatarCircle">

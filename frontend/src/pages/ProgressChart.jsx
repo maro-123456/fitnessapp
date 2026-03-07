@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import api from "../services/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 // Styles modernes et professionnels pour ProgressChart
 const styles = {
@@ -304,6 +305,7 @@ const styles = {
 };
 
 export default function ProgressChart() {
+  const { t } = useLanguage();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -387,7 +389,7 @@ export default function ProgressChart() {
       <div style={styles.container}>
         <div style={styles.loadingContainer}>
           <div style={styles.spinner}></div>
-          <p style={styles.loadingText}>Chargement des données de progression...</p>
+          <p style={styles.loadingText}>{t('loading')}</p>
         </div>
       </div>
     );
@@ -399,7 +401,7 @@ export default function ProgressChart() {
       <div style={styles.container}>
         <div style={styles.errorContainer}>
           <p style={styles.errorText}>⚠️ {error}</p>
-          <button onClick={fetchProgressData} style={styles.retryBtn}>Réessayer</button>
+          <button onClick={fetchProgressData} style={styles.retryBtn}>{t('retry')}</button>
         </div>
       </div>
     );
@@ -410,8 +412,8 @@ export default function ProgressChart() {
       {/* Header Section */}
       <div style={styles.headerSection}>
         <div style={styles.headerContent}>
-          <h1 style={styles.mainTitle}>📈 Suivi de Progression</h1>
-          <p style={styles.subtitle}>Visualisez votre évolution et atteignez vos objectifs</p>
+          <h1 style={styles.mainTitle}>📈 {t('progressChart')}</h1>
+          <p style={styles.subtitle}>{t('progressSubtitle')}</p>
         </div>
       </div>
 
@@ -422,28 +424,28 @@ export default function ProgressChart() {
             <div style={styles.statIcon}>⚖️</div>
             <div style={styles.statContent}>
               <span style={styles.statValue}>{stats.weightChange > 0 ? '+' : ''}{stats.weightChange.toFixed(1)} kg</span>
-              <span style={styles.statLabel}>Changement de poids</span>
+              <span style={styles.statLabel}>{t('weightChange')}</span>
             </div>
           </div>
           <div style={styles.statCard}>
             <div style={styles.statIcon}>🎯</div>
             <div style={styles.statContent}>
               <span style={styles.statValue}>+{stats.performanceChange}%</span>
-              <span style={styles.statLabel}>Amélioration performance</span>
+              <span style={styles.statLabel}>{t('performanceImprovement')}</span>
             </div>
           </div>
           <div style={styles.statCard}>
             <div style={styles.statIcon}>📊</div>
             <div style={styles.statContent}>
               <span style={styles.statValue}>{stats.avgPerformance}%</span>
-              <span style={styles.statLabel}>Performance moyenne</span>
+              <span style={styles.statLabel}>{t('avgPerformance')}</span>
             </div>
           </div>
           <div style={styles.statCard}>
             <div style={styles.statIcon}>📅</div>
             <div style={styles.statContent}>
               <span style={styles.statValue}>{filteredData.length}</span>
-              <span style={styles.statLabel}>Jours suivis</span>
+              <span style={styles.statLabel}>{t('daysTracked')}</span>
             </div>
           </div>
         </div>

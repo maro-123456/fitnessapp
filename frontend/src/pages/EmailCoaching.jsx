@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function EmailCoaching() {
+  const { t } = useLanguage();
   const [preferences, setPreferences] = useState({
     emailNotifications: true,
     weeklyRecap: true,
@@ -46,11 +48,11 @@ export default function EmailCoaching() {
       
       await api.put("/email/preferences", newPreferences);
       
-      setSuccessMessage("Préférences mises à jour avec succès !");
+      setSuccessMessage(t('preferencesUpdated'));
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.log("Erreur mise à jour préférences:", err);
-      setError("Erreur lors de la mise à jour des préférences");
+      setError(t('preferencesError'));
       setTimeout(() => setError(""), 3000);
     }
   };
@@ -64,11 +66,11 @@ export default function EmailCoaching() {
       
       await api.post("/email/test", { userId, emailType });
       
-      setSuccessMessage(`Email ${emailType} envoyé avec succès !`);
+      setSuccessMessage(t('testEmailSent').replace('{type}', emailType));
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.log("Erreur envoi email test:", err);
-      setError("Erreur lors de l'envoi de l'email test");
+      setError(t('testEmailError'));
       setTimeout(() => setError(""), 3000);
     } finally {
       setTestLoading(false);
@@ -77,10 +79,10 @@ export default function EmailCoaching() {
 
   const getEmailTypeLabel = (type) => {
     const labels = {
-      weekly_recap: "Récap Hebdomadaire",
-      workout_reminder: "Rappel Entraînement",
-      goal_achieved: "Objectif Atteint",
-      inactivity_alert: "Alerte Inactivité"
+      weekly_recap: t('weeklyRecap'),
+      workout_reminder: t('workoutReminder'),
+      goal_achieved: t('goalAchieved'),
+      inactivity_alert: t('inactivityAlert')
     };
     return labels[type] || type;
   };
@@ -111,7 +113,7 @@ export default function EmailCoaching() {
       <div style={styles.container}>
         <div style={styles.loadingContainer}>
           <div style={styles.spinner}></div>
-          <p style={styles.loadingText}>Chargement des paramètres email...</p>
+          <p style={styles.loadingText}>{t('loading')}</p>
         </div>
       </div>
     );
@@ -121,8 +123,8 @@ export default function EmailCoaching() {
     <div style={styles.container}>
       <header style={styles.header}>
         <div style={styles.welcomeSection}>
-          <h1 style={styles.title}>📧 Emails de Coaching</h1>
-          <p style={styles.subtitle}>Personnalisez vos notifications et suivez votre progression</p>
+          <h1 style={styles.title}>📧 {t('emailCoaching')}</h1>
+          <p style={styles.subtitle}>{t('emailCoachingSubtitle')}</p>
         </div>
         <div style={styles.userAvatar}>
           <div style={styles.avatarCircle}>

@@ -1,9 +1,11 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import api from "../services/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Profile() {
   const { user } = useContext(AuthContext);
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userStats, setUserStats] = useState(null);
@@ -80,18 +82,23 @@ export default function Profile() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await api.put("/user/profile", formData);
+      const response = await api.put("/user/profile", formData);
       
       // Mettre à jour le contexte utilisateur si disponible
-      if (user && user.updateProfile) {
-        await user.updateProfile(formData);
+      if (response.data.user) {
+        // Mettre à jour les données utilisateur dans le contexte
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // Rafraîchir la page pour voir les changements
+        window.location.reload();
       }
       
       setEditMode(false);
       setError(null);
+      alert(t('profileUpdated'));
     } catch (err) {
       console.log("Erreur handleSave:", err);
-      setError("Impossible de mettre à jour le profil");
+      setError(t('profileUpdateError'));
+      alert(t('profileUpdateError'));
     } finally {
       setSaving(false);
     }
@@ -131,7 +138,7 @@ export default function Profile() {
       <div style={styles.container}>
         <div style={styles.loadingContainer}>
           <div style={styles.spinner}></div>
-          <p style={styles.loadingText}>Chargement du profil...</p>
+          <p style={styles.loadingText}>{t('loading')}</p>
         </div>
       </div>
     );
@@ -154,8 +161,8 @@ export default function Profile() {
       {/* Header Section */}
       <div style={styles.headerSection}>
         <div style={styles.headerContent}>
-          <h1 style={styles.mainTitle}>👤 Mon Profil</h1>
-          <p style={styles.subtitle}>Gérez vos informations et suivez vos progrès</p>
+          <h1 style={styles.mainTitle}>👤 {t('myProfile')}</h1>
+          <p style={styles.subtitle}>{t('manageInfo')}</p>
         </div>
       </div>
 
@@ -172,7 +179,7 @@ export default function Profile() {
               color: activeTab === "overview" ? "white" : "#333"
             }}
           >
-            📊 Vue d'ensemble
+            📊 {t('overview')}
           </button>
           <button
             onClick={() => setActiveTab("stats")}
@@ -184,7 +191,7 @@ export default function Profile() {
               color: activeTab === "stats" ? "white" : "#333"
             }}
           >
-            📈 Statistiques
+            📈 {t('stats')}
           </button>
           <button
             onClick={() => setActiveTab("settings")}
@@ -196,7 +203,7 @@ export default function Profile() {
               color: activeTab === "settings" ? "white" : "#333"
             }}
           >
-            ⚙️ Paramètres
+            ⚙️ {t('settings')}
           </button>
         </div>
       </div>
@@ -223,7 +230,7 @@ export default function Profile() {
                   {editMode ? (
                     <div style={styles.editForm}>
                       <div style={styles.formGroup}>
-                        <label style={styles.formLabel}>Nom</label>
+                        <label style={styles.formLabel}>{t('name')}</label>
                         <input
                           type="text"
                           name="name"
@@ -233,7 +240,7 @@ export default function Profile() {
                         />
                       </div>
                       <div style={styles.formGroup}>
-                        <label style={styles.formLabel}>Âge</label>
+                        <label style={styles.formLabel}>{t('age')}</label>
                         <input
                           type="number"
                           name="age"
@@ -243,7 +250,7 @@ export default function Profile() {
                         />
                       </div>
                       <div style={styles.formGroup}>
-                        <label style={styles.formLabel}>Poids (kg)</label>
+                        <label style={styles.formLabel}>{t('weight')}</label>
                         <input
                           type="number"
                           name="weight"
@@ -253,30 +260,30 @@ export default function Profile() {
                         />
                       </div>
                       <div style={styles.formGroup}>
-                        <label style={styles.formLabel}>Objectif</label>
+                        <label style={styles.formLabel}>{t('goal')}</label>
                         <select
                           name="goal"
                           value={formData.goal}
                           onChange={handleInputChange}
                           style={styles.formSelect}
                         >
-                          <option value="">Sélectionner un objectif</option>
-                          <option value="perte">Perte de poids</option>
-                          <option value="maintien">Maintien</option>
-                          <option value="prise">Prise de masse</option>
+                          <option value="">{t('selectGoal')}</option>
+                          <option value="perte">{t('weightLoss')}</option>
+                          <option value="maintien">{t('maintenance')}</option>
+                          <option value="prise">{t('weightGain')}</option>
                         </select>
                       </div>
                       <div style={styles.formGroup}>
-                        <label style={styles.formLabel}>Langue</label>
+                        <label style={styles.formLabel}>{t('language')}</label>
                         <select
                           name="language"
                           value={formData.language}
                           onChange={handleInputChange}
                           style={styles.formSelect}
                         >
-                          <option value="fr">Français</option>
-                          <option value="en">English</option>
-                          <option value="es">Español</option>
+                          <option value="fr">{t('french')}</option>
+                          <option value="en">{t('english')}</option>
+                          <option value="es">{t('spanish')}</option>
                         </select>
                       </div>
                       <div style={styles.formActions}>
@@ -284,7 +291,7 @@ export default function Profile() {
                           onClick={handleEditToggle}
                           style={styles.cancelBtn}
                         >
-                          Annuler
+                          {t('cancel')}
                         </button>
                         <button
                           onClick={handleSave}
@@ -296,43 +303,43 @@ export default function Profile() {
                             opacity: saving ? 0.7 : 1
                           }}
                         >
-                          {saving ? "Sauvegarde..." : "💾 Sauvegarder"}
+                          {saving ? t('saving') : t('save')}
                         </button>
                       </div>
                     </div>
                   ) : (
                     <div style={styles.profileDetails}>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>👤 Nom</span>
-                        <span style={styles.detailValue}>{user?.name || "Non défini"}</span>
+                        <span style={styles.detailLabel}>👤 {t('name')}</span>
+                        <span style={styles.detailValue}>{user?.name || t('notDefined')}</span>
                       </div>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>📧 Email</span>
-                        <span style={styles.detailValue}>{user?.email || "Non défini"}</span>
+                        <span style={styles.detailLabel}>📧 {t('email')}</span>
+                        <span style={styles.detailValue}>{user?.email || t('notDefined')}</span>
                       </div>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>🎂 Âge</span>
-                        <span style={styles.detailValue}>{user?.age || "Non défini"} ans</span>
+                        <span style={styles.detailLabel}>🎂 {t('age')}</span>
+                        <span style={styles.detailValue}>{user?.age || t('notDefined')} ans</span>
                       </div>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>⚖️ Poids</span>
-                        <span style={styles.detailValue}>{user?.weight || "Non défini"} kg</span>
+                        <span style={styles.detailLabel}>⚖️ {t('weight')}</span>
+                        <span style={styles.detailValue}>{user?.weight || t('notDefined')} kg</span>
                       </div>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>🎯 Objectif</span>
+                        <span style={styles.detailLabel}>🎯 {t('goal')}</span>
                         <span style={styles.detailValue}>
                           {user?.goal ? (
                             <>
                               <span style={{ color: getGoalColor(user.goal) }}>
-                                {getGoalIcon(user.goal)} {user.goal}
+                                {getGoalIcon(user.goal)} {t(user.goal)}
                               </span>
                             </>
-                          ) : "Non défini"}
+                          ) : t('notDefined')}
                         </span>
                       </div>
                       <div style={styles.detailItem}>
-                        <span style={styles.detailLabel}>🌍 Langue</span>
-                        <span style={styles.detailValue}>{user?.language?.toUpperCase() || "FR"}</span>
+                        <span style={styles.detailLabel}>🌍 {t('language')}</span>
+                        <span style={styles.detailValue}>{user?.language?.toUpperCase() || t('french')}</span>
                       </div>
                     </div>
                   )}

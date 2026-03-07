@@ -3,13 +3,17 @@ const Gym = require('../models/Gym');
 // Obtenir toutes les salles de sport
 exports.getGyms = async (req, res) => {
   try {
-    const { city, facilities, priceRange, search } = req.query;
+    const { page = 1, limit = 10, type, city, search, facilities, priceRange } = req.query;
     
     // Construire le filtre
     let filter = { isActive: true };
     
+    if (type && type !== 'all') {
+      filter.type = type;
+    }
+    
     if (city) {
-      filter.city = new RegExp(city, 'i');
+      filter.city = { $regex: city, $options: 'i' };
     }
     
     if (facilities) {
@@ -22,17 +26,52 @@ exports.getGyms = async (req, res) => {
     }
     
     if (search) {
-      filter.$text = { $search: search };
+      filter.$text = { $regex: search, $options: 'i' };
     }
+    
+    // Pagination
+    const skip = (page - 1) * limit;
     
     const gyms = await Gym.find(filter)
       .populate('addedBy', 'name')
-      .sort({ 'rating.average': -1 });
+      .sort({ rating: -1 })
+      .skip(skip)
+      .limit(limit * 1);
     
-    res.json({ gyms });
+    const total = await Gym.countDocuments(filter);
+    
+    // Renvoyer les données avec la structure attendue par le frontend
+    let gymsData = [];
+    if (gyms.length > 0) {
+      gymsData = gyms.map(gym => ({
+        id: gym._id,
+        name: gym.name,
+        address: gym.address,
+        phone: gym.phone,
+        hours: gym.hours,
+        price: gym.price,
+        type: gym.type,
+        equipment: gym.equipment,
+        rating: gym.rating,
+        coordinates: gym.coordinates
+      }));
+    }
+    
+    console.log('Gyms data:', gymsData);
+    console.log('Gyms array:', Array.isArray(gymsData));
+    
+    res.json({
+      gyms: gymsData,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
   } catch (error) {
-    console.error('Erreur récupération salles de sport:', error);
-    res.status(500).json({ message: "Erreur lors de la récupération des salles de sport" });
+    console.error('Erreur get gyms:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

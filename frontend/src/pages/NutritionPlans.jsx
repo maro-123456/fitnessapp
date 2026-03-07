@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function NutritionPlans() {
+  const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -94,6 +96,13 @@ export default function NutritionPlans() {
       ? plans
       : plans.filter((plan) => plan.objective === filter);
 
+  const filters = [
+    { value: "all", label: t('allPlans'), icon: "📋" },
+    { value: "perte", label: t('weightLoss'), icon: "🔥" },
+    { value: "maintien", label: t('maintenance'), icon: "⚖️" },
+    { value: "prise", label: t('muscleGain'), icon: "💪" }
+  ];
+
   // Loading state
   if (loading) {
     return (
@@ -123,22 +132,17 @@ export default function NutritionPlans() {
       {/* Header Section */}
       <div style={styles.headerSection}>
         <div style={styles.headerContent}>
-          <h1 style={styles.mainTitle}>🥗 Plans Nutrition</h1>
-          <p style={styles.subtitle}>Découvrez nos plans nutritionnels personnalisés pour atteindre vos objectifs</p>
+          <h1 style={styles.mainTitle}>🥗 {t('nutritionPlans')}</h1>
+          <p style={styles.subtitle}>{t('nutritionSubtitle')}</p>
         </div>
       </div>
 
       {/* Filter Section */}
       <div style={styles.filterSection}>
         <div style={styles.filterContainer}>
-          <span style={styles.filterLabel}>Filtrer par objectif:</span>
+          <span style={styles.filterLabel}>{t('filterByObjective')}:</span>
           <div style={styles.filterButtons}>
-            {[
-              { value: "all", label: "Tous", icon: "🥗" },
-              { value: "perte", label: "Perte de poids", icon: "🔥" },
-              { value: "maintien", label: "Maintien", icon: "⚖️" },
-              { value: "prise", label: "Prise de masse", icon: "💪" }
-            ].map((f) => (
+            {filters.map((f) => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
@@ -166,19 +170,19 @@ export default function NutritionPlans() {
         <div style={styles.statsContainer}>
           <div style={styles.statItem}>
             <span style={styles.statNumber}>{filteredPlans.length}</span>
-            <span style={styles.statLabel}>Plans disponibles</span>
+            <span style={styles.statLabel}>{t('availablePlans')}</span>
           </div>
           <div style={styles.statItem}>
             <span style={styles.statNumber}>{plans.filter(p => p.objective === "perte").length}</span>
-            <span style={styles.statLabel}>Perte de poids</span>
+            <span style={styles.statLabel}>{t('weightLoss')}</span>
           </div>
           <div style={styles.statItem}>
             <span style={styles.statNumber}>{plans.filter(p => p.objective === "maintien").length}</span>
-            <span style={styles.statLabel}>Maintien</span>
+            <span style={styles.statLabel}>{t('maintenance')}</span>
           </div>
           <div style={styles.statItem}>
             <span style={styles.statNumber}>{plans.filter(p => p.objective === "prise").length}</span>
-            <span style={styles.statLabel}>Prise de masse</span>
+            <span style={styles.statLabel}>{t('muscleGain')}</span>
           </div>
         </div>
       </div>
@@ -188,9 +192,9 @@ export default function NutritionPlans() {
         {filteredPlans.length === 0 ? (
           <div style={styles.emptyState}>
             <div style={styles.emptyIcon}>🔍</div>
-            <h3 style={styles.emptyTitle}>Aucun plan trouvé</h3>
-            <p style={styles.emptyText}>Aucun plan ne correspond à cet objectif</p>
-            <button onClick={() => setFilter("all")} style={styles.resetBtn}>Voir tous les plans</button>
+            <h3 style={styles.emptyTitle}>{t('noPlanFound')}</h3>
+            <p style={styles.emptyText}>{t('noPlanMatch')}</p>
+            <button onClick={() => setFilter("all")} style={styles.resetBtn}>{t('seeAllPlans')}</button>
           </div>
         ) : (
           <div style={styles.plansGrid}>
@@ -502,27 +506,27 @@ const styles = {
     marginRight: "auto"
   },
   planCard: {
-    background: "#2d2d2d",
+    background: "#ffffff",
     borderRadius: "20px",
     overflow: "hidden",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.3)",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
     transition: "all 0.3s ease",
-    border: "1px solid #404040",
+    border: "1px solid #e0e0e0",
     cursor: "pointer"
   },
   planHeader: {
     padding: "1.5rem",
-    borderBottom: "1px solid #404040",
-    background: "#1a1a1a"
+    borderBottom: "1px solid #e0e0e0",
+    background: "#f8f9fa"
   },
   planTitle: {
     fontSize: "1.3rem",
     fontWeight: "700",
-    color: "#ffffff",
+    color: "#2d3436",
     margin: "0 0 0.5rem 0"
   },
   planDescription: {
-    color: "#a1a1a1",
+    color: "#6c757d",
     fontSize: "0.9rem",
     margin: "0",
     lineHeight: "1.4"
@@ -537,11 +541,11 @@ const styles = {
   planPrice: {
     fontSize: "1.5rem",
     fontWeight: "700",
-    color: "#ffffff",
+    color: "#2d3436",
     margin: "0"
   },
   planDuration: {
-    color: "#a1a1a1",
+    color: "#6c757d",
     fontSize: "0.9rem",
     margin: "0"
   },
@@ -612,7 +616,7 @@ const styles = {
     padding: "20px 25px",
     display: "flex",
     gap: "15px",
-    borderTop: "1px solid #f1f3f4"
+    borderTop: "1px solid #e0e0e0"
   },
   detailsBtn: {
     flex: 1,

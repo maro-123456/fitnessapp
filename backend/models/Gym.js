@@ -17,13 +17,13 @@ const gymSchema = new mongoose.Schema({
     trim: true
   },
   coordinates: {
-    latitude: {
+    lat: {
       type: Number,
       required: true,
       min: -90,
       max: 90
     },
-    longitude: {
+    lng: {
       type: Number,
       required: true,
       min: -180,
@@ -63,7 +63,7 @@ const gymSchema = new mongoose.Schema({
   priceRange: {
     type: String,
     enum: ['$', '$$', '$$$', '$$$$'],
-    default: '$$'
+    default: '$'
   },
   rating: {
     average: {
@@ -78,6 +78,9 @@ const gymSchema = new mongoose.Schema({
     }
   },
   images: [{
+    type: String
+  }],
+  amenities: [{
     type: String
   }],
   isActive: {

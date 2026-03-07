@@ -1,32 +1,173 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import api from "../services/api";
+
+// Importer Google Maps
+const { GoogleMap, useJsApiLoader, Marker, InfoWindow, DirectionsRenderer } = require("@react-google-maps/api");
 
 export default function GymMap() {
-  const [gyms, setGyms] = useState([]);
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [gyms, setGyms] = useState([]);
   const [selectedGym, setSelectedGym] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [filters, setFilters] = useState({
+    type: 'all',
+    distance: 10,
+    maxPrice: 100
+  });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [directions, setDirections] = useState(null);
 
-  // Charger les salles de sport depuis l'API
-  const loadGyms = async () => {
+  // Charger Google Maps API
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyB41DrUjB8OPq9hVdL5Dd5O6S8t7Wy9HvX0Y"
+  });
+
+  // Calculer la distance entre deux points
+  const calculateDistance = useCallback((point1, point2) => {
+    const R = 6371; // Rayon de la Terre en km
+    const dLat = (point2.lat - point1.lat) * Math.PI / 180;
+    const dLon = (point2.lng - point1.lng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }, []);
+
+  // Obtenir la position de l'utilisateur
+  const getUserLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation:", error);
+          // Position par défaut (Paris)
+          setUserLocation({ lat: 48.856, lng: 2.352 });
+        }
+      );
+    } else {
+      // Position par défaut si la géolocalisation n'est pas supportée
+      setUserLocation({ lat: 48.856, lng: 2.352 });
+    }
+  }, []);
+
+  // Charger les salles depuis l'API
+  const loadGyms = useCallback(async () => {
     try {
       setLoading(true);
-      setError(null);
       
-      const response = await axios.get('http://localhost:5000/api/gyms');
-      setGyms(response.data.gyms || []);
+      const response = await api.get('/gyms');
+      console.log('API Response:', response.data);
+      setGyms(response.data || []);
       setLoading(false);
+      
     } catch (error) {
       console.error("Erreur API:", error);
-      setError("Impossible de charger les salles de sport");
       setLoading(false);
     }
-  };
-
-  // Charger les salles au montage du composant
-  useEffect(() => {
-    loadGyms();
   }, []);
+
+  // Filtrer les salles selon les critères
+  const filteredGyms = useMemo(() => {
+    return gyms.filter(gym => {
+      // Filtre par type
+      if (filters.type !== 'all' && gym.type !== filters.type) {
+        return false;
+      }
+      
+      // Filtre par prix
+      if (gym.price > filters.maxPrice) {
+        return false;
+      }
+      
+      // Filtre par recherche
+      if (searchTerm && !gym.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      
+      // Filtre par distance
+      if (userLocation && gym.coordinates) {
+        const distance = calculateDistance(userLocation, gym.coordinates);
+        if (distance > filters.distance) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  }, [gyms, filters, userLocation, searchTerm, calculateDistance]);
+
+  // Obtenir les directions vers une salle
+  const getDirections = useCallback((gym) => {
+    if (!userLocation || !gym.coordinates) return;
+
+    const directionsService = new window.google.maps.DirectionsService();
+    
+    directionsService.route(
+      {
+        origin: userLocation,
+        destination: gym.coordinates,
+        travelMode: window.google.maps.TravelMode.DRIVING
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setDirections(result);
+        } else {
+          console.error('Erreur directions:', status);
+        }
+      }
+    );
+  }, [userLocation]);
+
+  // Charger les données au montage
+  useEffect(() => {
+    if (isLoaded) {
+      getUserLocation();
+      loadGyms();
+    }
+  }, [isLoaded, getUserLocation, loadGyms]);
+
+  if (!isLoaded) {
+    return (
+      <div style={{ 
+        width: 'calc(100vw - 220px)', 
+        height: '100vh', 
+        backgroundColor: '#1a1a1a', 
+        color: '#ffffff',
+        marginLeft: '220px',
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>
+          🗺️ {t('loading')}
+        </h1>
+        <div style={{ 
+          width: '40px', 
+          height: '40px', 
+          border: '4px solid #404040',
+          borderTop: '4px solid #6366f1',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginBottom: '20px'
+        }}></div>
+        <p style={{ color: '#a1a1a1', fontSize: '1rem' }}>
+          {t('gymsLoadError')}
+        </p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -43,7 +184,7 @@ export default function GymMap() {
         justifyContent: 'center'
       }}>
         <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>
-          🏋️ Chargement...
+          🏋️ {t('loading')}
         </h1>
         <div style={{ 
           width: '40px', 
@@ -52,46 +193,41 @@ export default function GymMap() {
           borderTop: '4px solid #6366f1',
           borderRadius: '50%',
           animation: 'spin 1s linear infinite',
-          margin: '20px auto'
+          marginBottom: '20px'
         }}></div>
+        <p style={{ color: '#a1a1a1', fontSize: '1rem' }}>
+          {t('gymsLoadError')}
+        </p>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div style={{ 
-        width: 'calc(100vw - 220px)', 
-        height: '100vh', 
-        backgroundColor: '#1a1a1a', 
-        color: '#ffffff',
-        marginLeft: '220px',
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '20px' }}>
-          ❌ Erreur
-        </h1>
-        <p style={{ marginBottom: '20px' }}>{error}</p>
-        <button 
-          onClick={loadGyms}
-          style={{ 
-            background: '#6366f1', 
-            color: 'white', 
-            padding: '10px 20px', 
-            border: 'none', 
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
-        >
-          Réessayer
-        </button>
-      </div>
-    );
-  }
+  const mapContainerStyle = {
+    width: '100%',
+    height: '400px',
+    marginBottom: '20px',
+    borderRadius: '10px',
+    overflow: 'hidden'
+  };
+
+  const mapStyles = [
+    {
+      featureType: "all",
+      elementType: "geometry",
+      stylers: [
+        { saturation: -20 },
+        { lightness: 40 },
+        { visibility: "simplified" }
+      ]
+    },
+    {
+      featureType: "all",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+    }
+  ];
 
   return (
     <div style={{ 
@@ -101,326 +237,336 @@ export default function GymMap() {
       color: '#ffffff',
       marginLeft: '220px',
       padding: '20px',
-      overflowY: 'auto'
+      overflow: 'auto'
     }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
-        🗺️ Carte des Salles de Sport
-      </h1>
-      
-      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-        <p>📍 {gyms.length} salles de sport trouvées</p>
-        <p style={{ fontSize: '12px', color: '#a1a1a1' }}>
-          Données depuis MongoDB API
+      {/* Header */}
+      <div style={{
+        marginBottom: '30px',
+        textAlign: 'center'
+      }}>
+        <h1 style={{ 
+          fontSize: '2.5rem', 
+          marginBottom: '10px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
+          🗺️ {t('gymMap')}
+        </h1>
+        <p style={{ color: '#a1a1a1', fontSize: '1.1rem' }}>
+          {t('dataFromMongoDB')}
         </p>
       </div>
 
-      {/* Section Carte */}
-      <div style={{ 
-        backgroundColor: '#2d2d2d', 
-        padding: '20px', 
-        borderRadius: '10px', 
-        marginBottom: '20px',
-        minHeight: '400px'
+      {/* Filtres */}
+      <div style={{
+        backgroundColor: '#2d2d2d',
+        borderRadius: '15px',
+        padding: '20px',
+        marginBottom: '30px',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
       }}>
-        <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>
-          🗺️ Carte Interactive
-        </h3>
-        <div style={{ 
-          backgroundColor: '#404040', 
-          padding: '20px', 
-          borderRadius: '8px',
-          textAlign: 'center',
-          minHeight: '300px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
+        <h2 style={{ color: '#ffffff', marginBottom: '15px', fontSize: '1.3rem' }}>
+          🔍 {t('filters')}
+        </h2>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '15px',
+          marginBottom: '20px'
         }}>
-          <p style={{ marginBottom: '20px' }}>
-            {gyms.length > 0 ? `${gyms.length} salles trouvées` : 'Aucune salle trouvée'}
-          </p>
+          <select
+            value={filters.type}
+            onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '8px',
+              backgroundColor: '#404040',
+              color: '#ffffff',
+              border: '1px solid #555555',
+              fontSize: '14px'
+            }}
+          >
+            <option value="all">{t('allTypes')}</option>
+            <option value="fitness">{t('fitness')}</option>
+            <option value="crossfit">{t('crossfit')}</option>
+            <option value="yoga">{t('yoga')}</option>
+            <option value="swimming">{t('swimming')}</option>
+          </select>
           
-          {/* Marqueurs simulés */}
-          <div style={{ position: 'relative', width: '300px', height: '200px' }}>
-            {gyms.slice(0, 6).map((gym, index) => (
-              <div
-                key={gym._id || index}
-                style={{
-                  position: 'absolute',
-                  left: `${20 + (index * 40)}px`,
-                  top: `${30 + (index * 25)}px`,
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s'
-                }}
-                onClick={() => setSelectedGym(gym)}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.2)';
-                  e.target.style.zIndex = '10';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                  e.target.style.zIndex = '1';
-                }}
-              >
-                🏋️
-              </div>
-            ))}
-          </div>
+          <select
+            value={filters.distance}
+            onChange={(e) => setFilters(prev => ({ ...prev, distance: parseInt(e.target.value) }))}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '8px',
+              backgroundColor: '#404040',
+              color: '#ffffff',
+              border: '1px solid #555555',
+              fontSize: '14px'
+            }}
+          >
+            <option value={5}>5 {t('km')}</option>
+            <option value={10}>10 {t('km')}</option>
+            <option value={20}>20 {t('km')}</option>
+            <option value={50}>50 {t('km')}</option>
+          </select>
+          
+          <input
+            type="number"
+            placeholder={t('maxPrice')}
+            value={filters.maxPrice}
+            onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: parseInt(e.target.value) || 100 }))}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '8px',
+              backgroundColor: '#404040',
+              color: '#ffffff',
+              border: '1px solid #555555',
+              fontSize: '14px',
+              width: '120px'
+            }}
+          />
+          
+          <input
+            type="text"
+            placeholder={t('searchGym')}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '8px',
+              backgroundColor: '#404040',
+              color: '#ffffff',
+              border: '1px solid #555555',
+              fontSize: '14px',
+              width: '200px'
+            }}
+          />
         </div>
       </div>
 
-      {/* Section Liste des Salles */}
-      <div style={{ backgroundColor: '#2d2d2d', padding: '20px', borderRadius: '10px' }}>
-        <h3 style={{ marginBottom: '20px' }}>📍 Liste des Salles ({gyms.length})</h3>
-        
-        {gyms.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#a1a1a1' }}>
-            <p>Aucune salle de sport trouvée</p>
-            <button 
-              onClick={loadGyms}
-              style={{ 
-                background: '#6366f1', 
-                color: 'white', 
-                padding: '10px 20px', 
-                border: 'none', 
-                borderRadius: '5px',
-                cursor: 'pointer',
-                marginTop: '15px'
+      {/* Statistiques */}
+      <div style={{
+        textAlign: 'center',
+        color: '#a1a1a1',
+        fontSize: '14px',
+        marginBottom: '20px'
+      }}>
+        {t('gymsFound', { count: filteredGyms.length })}
+      </div>
+
+      {/* Carte Google Maps */}
+      {isLoaded && (
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          zoom={12}
+          center={userLocation || { lat: 48.856, lng: 2.352 }}
+          options={{
+            styles: mapStyles,
+            disableDefaultUI: true,
+            zoomControl: true,
+            streetViewControl: true,
+            mapTypeControl: true,
+            fullscreenControl: true
+          }}
+        >
+          {/* Marqueur pour la position de l'utilisateur */}
+          {userLocation && (
+            <Marker
+              position={userLocation}
+              icon={{
+                url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                scaledSize: new window.google.maps.Size(32, 32),
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(16, 32)
               }}
-            >
-              🔄 Recharger
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-            {gyms.map((gym, index) => (
-              <div
-                key={gym._id || index}
-                style={{
-                  backgroundColor: '#404040',
-                  padding: '20px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  border: selectedGym?._id === gym._id ? '2px solid #6366f1' : '1px solid #555',
-                  transition: 'all 0.3s ease'
-                }}
-                onClick={() => setSelectedGym(gym)}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                  <h4 style={{ margin: 0, color: '#ffffff' }}>{gym.name}</h4>
-                  <div style={{ color: '#fbbf24', fontSize: '14px' }}>
-                    ⭐ {gym.rating?.average?.toFixed(1) || 'N/A'} ({gym.rating?.count || 0})
-                  </div>
-                </div>
-                
-                <div style={{ marginTop: '10px', color: '#a1a1a1' }}>
-                  <p style={{ margin: '5px 0', fontSize: '14px' }}>📍 {gym.address}</p>
-                  <p style={{ margin: '5px 0', fontSize: '14px' }}>{gym.city}</p>
-                  <p style={{ margin: '5px 0', fontSize: '14px' }}>📞 {gym.phone}</p>
-                  <p style={{ margin: '5px 0', fontSize: '14px' }}>💰 {gym.priceRange}</p>
-                </div>
-                
-                {gym.facilities && gym.facilities.length > 0 && (
-                  <div style={{ marginTop: '15px' }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {gym.facilities.slice(0, 4).map((facility) => (
-                        <span
-                          key={facility}
-                          style={{
-                            backgroundColor: '#6366f1',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '12px',
-                            fontSize: '12px'
-                          }}
-                        >
-                          {facility}
-                        </span>
-                      ))}
-                      {gym.facilities.length > 4 && (
-                        <span style={{
-                          backgroundColor: '#555',
-                          color: '#ffffff',
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '12px'
-                        }}>
-                          +{gym.facilities.length - 4} plus
-                        </span>
-                      )}
+              title={t('yourLocation')}
+            />
+          )}
+
+          {/* Marqueurs pour les salles de sport */}
+          {filteredGyms.map((gym) => (
+            <Marker
+              key={gym.id}
+              position={gym.coordinates}
+              onClick={() => setSelectedGym(gym)}
+              icon={{
+                url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                scaledSize: new window.google.maps.Size(32, 32),
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(16, 32)
+              }}
+              title={gym.name}
+            />
+          ))}
+
+          {/* Fenêtre d'informations pour la salle sélectionnée */}
+          {selectedGym && (
+            <InfoWindow
+              position={selectedGym.coordinates}
+              onLoad={(infoWindow) => {
+                infoWindow.setContent(`
+                  <div style="padding: 10px; max-width: 300px;">
+                    <h3 style="margin: 0 0 10px 0; color: #333;">${selectedGym.name}</h3>
+                    <p style="margin: 5px 0; color: #666;"><strong>📍 ${t('address')}:</strong> ${selectedGym.address || 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>📞 ${t('phone')}:</strong> ${selectedGym.phone || 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>⏰ ${t('hours')}:</strong> ${selectedGym.hours || 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>💰 ${t('price')}:</strong> ${selectedGym.price ? selectedGym.price + '€/mo' : 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>🏋️ ${t('equipment')}:</strong> ${selectedGym.equipment ? selectedGym.equipment.join(', ') : 'N/A'}</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>⭐ ${t('rating')}:</strong> ${selectedGym.rating || 'N/A'}</p>
+                    <div style="margin-top: 15px; text-align: center;">
+                      <button 
+                        onClick={() => getDirections(selectedGym)}
+                        style="padding: 8px 16px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;"
+                      >
+                        ${t('getDirections')}
+                      </button>
                     </div>
                   </div>
-                )}
-                
-                <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-                  <button
-                    style={{
-                      flex: 1,
-                      background: '#6366f1',
-                      color: 'white',
-                      padding: '8px 16px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px'
-                    }}
-                  >
-                    📞 Contacter
-                  </button>
-                  <button
-                    style={{
-                      flex: 1,
-                      background: '#10b981',
-                      color: 'white',
-                      padding: '8px 16px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px'
-                    }}
-                  >
-                    🗺️ Itinéraire
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                `);
+              }}
+            />
+          )}
 
-      {/* Modal pour les détails */}
-      {selectedGym && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
-          }}
-          onClick={() => setSelectedGym(null)}
-        >
+          {/* Directions */}
+          {directions && (
+            <DirectionsRenderer
+              directions={directions}
+              panelStyle={{ backgroundColor: '#2d2d2d', padding: '10px' }}
+            />
+          )}
+        </GoogleMap>
+      )}
+
+      {/* Liste des salles */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '20px',
+        marginBottom: '20px'
+      }}>
+        {filteredGyms.map((gym) => (
           <div
+            key={gym._id}
             style={{
               backgroundColor: '#2d2d2d',
-              padding: '30px',
-              borderRadius: '15px',
-              maxWidth: '600px',
-              maxHeight: '80vh',
-              overflowY: 'auto',
+              borderRadius: '10px',
+              padding: '15px',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
               border: '1px solid #404040',
-              marginLeft: '220px'
+              transition: 'transform 0.3s ease',
+              cursor: 'pointer'
             }}
-            onClick={(e) => e.stopPropagation()}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-5px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+            onClick={() => setSelectedGym(gym)}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, color: '#ffffff' }}>{selectedGym.name}</h2>
-              <button
-                onClick={() => setSelectedGym(null)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#a1a1a1',
-                  fontSize: '20px',
-                  cursor: 'pointer'
-                }}
-              >
-                ✕
-              </button>
+            <h3 style={{ 
+              color: '#ffffff', 
+              margin: '0 0 10px 0',
+              fontSize: '1.2rem'
+            }}>
+              {gym.name}
+            </h3>
+            <div style={{ 
+              color: '#a1a1a1', 
+              fontSize: '0.9rem',
+              marginBottom: '5px'
+            }}>
+              📍 {gym.address}
             </div>
-            
-            <div style={{ color: '#a1a1a1' }}>
-              <p style={{ margin: '10px 0' }}>📍 {selectedGym.address}</p>
-              <p style={{ margin: '10px 0' }}>{selectedGym.city}</p>
-              <p style={{ margin: '10px 0' }}>📞 {selectedGym.phone}</p>
-              {selectedGym.email && <p style={{ margin: '10px 0' }}>📧 {selectedGym.email}</p>}
-              {selectedGym.website && (
-                <p style={{ margin: '10px 0' }}>
-                  🌐{' '}
-                  <a 
-                    href={selectedGym.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    style={{ color: '#6366f1', textDecoration: 'underline' }}
-                  >
-                    {selectedGym.website}
-                  </a>
-                </p>
-              )}
-              <p style={{ margin: '10px 0' }}>💰 {selectedGym.priceRange}</p>
-              <p style={{ margin: '10px 0' }}>
-                ⭐ {selectedGym.rating?.average?.toFixed(1) || 'N/A'}/5 ({selectedGym.rating?.count || 0} avis)
-              </p>
+            <div style={{ 
+              color: '#a1a1a1', 
+              fontSize: '0.9rem',
+              marginBottom: '5px'
+            }}>
+              📞 {gym.phone}
             </div>
-            
-            {selectedGym.description && (
-              <div style={{ marginTop: '20px' }}>
-                <h3 style={{ color: '#ffffff', marginBottom: '10px' }}>Description</h3>
-                <p style={{ color: '#a1a1a1', margin: 0 }}>{selectedGym.description}</p>
-              </div>
-            )}
-            
-            {selectedGym.facilities && selectedGym.facilities.length > 0 && (
-              <div style={{ marginTop: '20px' }}>
-                <h3 style={{ color: '#ffffff', marginBottom: '10px' }}>Équipements</h3>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {selectedGym.facilities.map((facility) => (
-                    <span
-                      key={facility}
-                      style={{
-                        backgroundColor: '#6366f1',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '12px',
-                        fontSize: '12px'
-                      }}
-                    >
-                      {facility}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <div style={{ 
+              color: '#a1a1a1', 
+              fontSize: '0.9rem',
+              marginBottom: '5px'
+            }}>
+              ⏰ {gym.hours}
+            </div>
+            <div style={{ 
+              color: '#a1a1a1', 
+              fontSize: '0.9rem',
+              marginBottom: '5px'
+            }}>
+              💰 {gym.price}€/mo
+            </div>
+            <div style={{ 
+              color: '#a1a1a1', 
+              fontSize: '0.9rem',
+              marginBottom: '5px'
+            }}>
+              🏋️ {gym.equipment.join(', ')}
+            </div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginTop: '10px'
+            }}>
+              <span style={{ color: '#ffc107', fontSize: '0.8rem' }}>
+                ⭐ {gym.rating}
+              </span>
               <button
+                onClick={() => getDirections(gym)}
                 style={{
-                  flex: 1,
-                  background: '#6366f1',
+                  padding: '8px 12px',
+                  backgroundColor: '#6366f1',
                   color: 'white',
-                  padding: '10px 16px',
                   border: 'none',
-                  borderRadius: '6px',
+                  borderRadius: '5px',
                   cursor: 'pointer',
-                  fontSize: '14px'
+                  fontSize: '12px'
                 }}
               >
-                📞 Contacter
-              </button>
-              <button
-                style={{
-                  flex: 1,
-                  background: '#10b981',
-                  color: 'white',
-                  padding: '10px 16px',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                🗺️ Itinéraire
+                {t('getDirections')}
               </button>
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+
+      {/* Script pour les directions */}
+      <script dangerouslySetInnerHTML={{
+        __html: `
+          window.getGymDirections = function(gymId) {
+            const gyms = ${JSON.stringify(gyms)};
+            const selectedGym = gyms.find(g => g.id === gymId);
+            if (selectedGym && window.userLocation) {
+              window.getDirections(selectedGym);
+            }
+          };
+          
+          window.getDirections = function(gym) {
+            if (!window.userLocation || !gym.coordinates) return;
+            
+            const directionsService = new google.maps.DirectionsService();
+            
+            directionsService.route({
+              origin: window.userLocation,
+              destination: gym.coordinates,
+              travelMode: google.maps.TravelMode.DRIVING
+            }, (result, status) => {
+              if (status === google.maps.DirectionsStatus.OK) {
+                window.setDirections(result);
+              } else {
+                console.error('Erreur directions:', status);
+              }
+            });
+          };
+        `
+      }} />
     </div>
   );
 }
