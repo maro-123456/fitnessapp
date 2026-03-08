@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
-import LeafletGymMap from "../components/LeafletGymMap";
+import MotivationQuote from "../components/MotivationQuote";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -81,24 +81,9 @@ export default function Dashboard() {
       </div>
 
       <div className="progress-section">
-        <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}>📈 Votre progression</h2>
-        <div className="progress-chart">
-          <div className="progress-bar">
-            <div 
-              className="progress-fill"
-              style={{ width: "65%" }}
-              data-progress="65%"
-            ></div>
-          </div>
-          <div className="progress-labels">
-            <span style={{ color: "#a1a1a1", fontSize: "0.9rem" }}>0%</span>
-            <span className="current-progress" style={{ color: "#6366f1", fontWeight: "600" }}>65% atteint</span>
-            <span style={{ color: "#a1a1a1", fontSize: "0.9rem" }}>100%</span>
-          </div>
-        </div>
+        <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}>{t('motivationQuote')}</h2>
+        <MotivationQuote />
       </div>
-
-   
 
       <style jsx>{`
         .dashboard-container {

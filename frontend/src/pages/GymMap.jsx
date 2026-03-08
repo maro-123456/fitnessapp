@@ -29,6 +29,18 @@ export default function GymMap() {
       coordinates: { lat: 30.4278, lng: -9.5981 }
     },
     {
+      id: 1,
+      name: "FitLife Agadir",
+      address: "Boulevard du 20 Août, Agadir, Maroc",
+      phone: "+212 5 28 84 00 00",
+      hours: "6h00 - 23h00",
+      price: 49,
+      type: "fitness",
+      equipment: ["Tapis roulant", "Vélo elliptique", "Haltérophilie", "Musculation"],
+      rating: 4.5,
+      coordinates: { lat: 30.4278, lng: -9.5981 }
+    },
+    {
       id: 2,
       name: "Muscle Club Agadir",
       address: "Avenue des Nations Unies, Agadir, Maroc",
