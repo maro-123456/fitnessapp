@@ -25,6 +25,7 @@ const workoutRoutes = require('./routes/workoutRoutes');
 const gymRoutes = require('./routes/gymRoutes');
 const userRoutes = require('./routes/userRoutes');
 const quotesRoutes = require('./routes/quotes');
+const hydrationRoutes = require('./routes/hydrationRoutes');
 
 app.use("/api/auth", authRoutes);
 app.use("/api/exercises", exerciseRoutes);
@@ -34,6 +35,7 @@ app.use("/api/workouts", workoutRoutes);
 app.use("/api/gyms", gymRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/quotes", quotesRoutes);
+app.use("/api/hydration", hydrationRoutes);
 
 // Route de test pour l'email de bienvenue
 app.post("/api/test-welcome-email", async (req, res) => {
