@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import MotivationQuote from "../components/MotivationQuote";
@@ -7,6 +7,8 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const { t } = useLanguage();
   const [activeCard, setActiveCard] = useState(null);
+  const [hydrationStats, setHydrationStats] = useState(null);
+  const [hydrationLoading, setHydrationLoading] = useState(false);
 
   const stats = [
     { id: 1, icon: "🎯", label: t('goal'), value: user?.goal, color: "#6366f1", desc: t('fitnessGoal') },
@@ -30,6 +32,81 @@ export default function Dashboard() {
   };
 
   const bmiValue = calculateBMI(user?.weight, user?.height);
+
+  // Fetch hydration stats
+  useEffect(() => {
+    const fetchHydrationStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.log('No authentication token found');
+          return;
+        }
+        
+        setHydrationLoading(true);
+        const response = await fetch('http://localhost:5000/api/hydration/stats/daily', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setHydrationStats(data);
+      } catch (error) {
+        console.error('Error fetching hydration stats:', error);
+      } finally {
+        setHydrationLoading(false);
+      }
+    };
+
+    fetchHydrationStats();
+  }, []);
+
+  // Quick add hydration
+  const quickAddWater = async (amount, unit = 'ml') => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log('No authentication token found');
+        return;
+      }
+
+      const addResponse = await fetch('http://localhost:5000/api/hydration', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount, unit, notes: 'Ajout rapide depuis dashboard' })
+      });
+      
+      if (!addResponse.ok) {
+        throw new Error(`HTTP error! status: ${addResponse.status}`);
+      }
+      
+      // Refresh stats
+      const response = await fetch('http://localhost:5000/api/hydration/stats/daily', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setHydrationStats(data);
+    } catch (error) {
+      console.error('Error adding hydration:', error);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -83,6 +160,32 @@ export default function Dashboard() {
       <div className="progress-section">
         <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}>{t('motivationQuote')}</h2>
         <MotivationQuote />
+      </div>
+
+      <div className="hydration-section">
+        <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}> Hydratation</h2>
+        
+        <div className="hydration-stats">
+          <div className="hydration-main">
+            <div className="hydration-amount">
+              <span className="hydration-number">{hydrationStats?.totalMl || 0}</span>
+              <span className="hydration-unit">ml</span>
+            </div>
+            <div className="hydration-goal">Objectif: 2000ml</div>
+            <div className="hydration-bar">
+              <div 
+                className="hydration-fill"
+                style={{ width: `${Math.min(((hydrationStats?.totalMl || 0) / 2000) * 100, 100)}%` }}
+              ></div>
+            </div>
+          </div>
+          
+          <div className="hydration-quick-add">
+            <button onClick={() => quickAddWater(250)} className="water-btn">+250ml</button>
+            <button onClick={() => quickAddWater(500)} className="water-btn">+500ml</button>
+            <button onClick={() => quickAddWater(1000)} className="water-btn">+1L</button>
+          </div>
+        </div>
       </div>
 
       <style jsx>{`
@@ -275,6 +378,8 @@ export default function Dashboard() {
           max-width: 1400px;
           margin-left: auto;
           margin-right: auto;
+          margin-bottom: 1.5rem;
+          margin-top: 30px
         }
         
         .progress-section h2 {
@@ -282,6 +387,140 @@ export default function Dashboard() {
           margin-bottom: 1rem;
           font-size: 1.5rem;
           font-weight: 700;
+        }
+        
+        .progress-chart {
+          margin-top: 1rem;
+        }
+        
+        .progress-bar {
+          height: 12px;
+          background: #404040;
+          border-radius: 6px;
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #6366f1, #8b5cf6);
+          border-radius: 6px;
+          position: relative;
+          transition: width 1s ease-in-out;
+        }
+        
+        .progress-fill::after {
+          content: attr(data-progress);
+          position: absolute;
+          right: -40px;
+          top: -30px;
+          background: #6366f1;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.8rem;
+          font-weight: 600;
+        }
+        
+        .progress-labels {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 0.5rem;
+          color: #a1a1a1,
+          font-size: 0.9rem;
+        }
+        
+        .current-progress {
+          color: #6366f1;
+          font-weight: 600;
+        }
+        
+        .hydration-section {
+          background: #2d2d2d;
+          padding: 1.5rem;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          border: 1px solid #404040;
+          animation: fadeIn 0.8s ease-out;
+          max-width: 1400px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 1.5rem;
+        }
+        
+        .hydration-stats {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 2rem;
+        }
+        
+        .hydration-main {
+          flex: 1;
+        }
+        
+        .hydration-amount {
+          display: flex;
+          align-items: baseline;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .hydration-number {
+          font-size: 3rem;
+          font-weight: 700;
+          color: #06b6d4;
+        }
+        
+        .hydration-unit {
+          font-size: 1.2rem;
+          color: #a1a1a1;
+        }
+        
+        .hydration-goal {
+          color: #a1a1a1;
+          margin-bottom: 1rem;
+        }
+        
+        .hydration-bar {
+          width: 100%;
+          height: 12px;
+          background: #404040;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+        
+        .hydration-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #06b6d4, #0891b2);
+          border-radius: 6px;
+          transition: width 1s ease-in-out;
+        }
+        
+        .hydration-quick-add {
+          display: flex;
+          gap: 1rem;
+        }
+        
+        .water-btn {
+          background: linear-gradient(135deg, #06b6d4, #0891b2);
+          color: white;
+          border: none;
+          padding: 0.8rem 1.2rem;
+          border-radius: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+        
+        .water-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+        }
+        
+        .water-btn:active {
+          transform: translateY(0);
         }
         
         .progress-chart {
