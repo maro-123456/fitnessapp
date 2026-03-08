@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import LeafletGymMap from "../components/LeafletGymMap";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -95,6 +96,33 @@ export default function Dashboard() {
             <span style={{ color: "#a1a1a1", fontSize: "0.9rem" }}>100%</span>
           </div>
         </div>
+      </div>
+
+      <div className="map-section">
+        <h2 style={{ color: "#ffffff", margin: "0 0 1rem 0", fontSize: "1.5rem", fontWeight: "700" }}>📍 Votre localisation</h2>
+        {user?.location ? (
+          <div style={{ 
+            padding: '12px 16px', 
+            background: '#2d2d2d', 
+            borderRadius: '12px',
+            fontSize: '14px',
+            color: '#a1a1a1',
+            border: '1px solid #404040'
+          }}>
+            📍 Position enregistrée: {user.location.lat.toFixed(4)}, {user.location.lng.toFixed(4)}
+          </div>
+        ) : (
+          <div style={{ 
+            padding: '12px 16px', 
+            background: '#2d2d2d', 
+            borderRadius: '12px',
+            fontSize: '14px',
+            color: '#a1a1a1',
+            border: '1px solid #404040'
+          }}>
+            📍 Aucune localisation enregistrée
+          </div>
+        )}
       </div>
 
       <style jsx>{`

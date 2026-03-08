@@ -17,7 +17,6 @@ function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
 }
-
 export default function App() {
   return (
     <LanguageProvider>

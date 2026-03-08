@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import API from "../services/api";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import SimpleLeafletMap from "../components/SimpleLeafletMap";
 
 export default function Register() {
   const { setUser } = useContext(AuthContext);
@@ -15,11 +16,16 @@ export default function Register() {
     weight: "",
     height: "",
     goal: "loss",
-    language: "fr"
+    language: "fr",
+    location: null
   });
 
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleLocationSelect = (location) => {
+    setForm({ ...form, location });
+  };
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -187,6 +193,23 @@ export default function Register() {
                   <option value="maintain">⚖️ Maintien</option>
                 </select>
               </div>
+            </div>
+
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>📍 Votre localisation (cliquez sur la carte)</label>
+              <SimpleLeafletMap onLocationSelect={handleLocationSelect} />
+              {form.location && (
+                <div style={{ 
+                  marginTop: '8px', 
+                  padding: '8px 12px', 
+                  background: '#2d2d2d', 
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  color: '#a1a1a1'
+                }}>
+                  📍 Position: {form.location.lat.toFixed(4)}, {form.location.lng.toFixed(4)}
+                </div>
+              )}
             </div>
 
             <div style={styles.inputGroup}>

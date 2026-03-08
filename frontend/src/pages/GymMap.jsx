@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
+import SimpleGymMap from "../components/SimpleGymMap";
 
 export default function GymMap() {
   console.log('GymMap component starting...');
@@ -173,19 +174,29 @@ export default function GymMap() {
       {/* Filtres */}
       <div style={{
         backgroundColor: '#2d2d2d',
-        borderRadius: '15px',
-        padding: '20px',
-        marginBottom: '30px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
       }}>
-        <h2 style={{ color: '#ffffff', marginBottom: '15px', fontSize: '1.3rem' }}>
-          🔍 {t('filters')}
+        <h2 style={{
+          color: '#ffffff',
+          marginBottom: '15px',
+          fontSize: '1.5rem',
+          fontWeight: '600'
+        }}>
+          🗺️ Carte des salles de sport
         </h2>
+        <SimpleGymMap />
+      </div>
+
+      {/* Filtres et recherche */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+        marginBottom: '20px'
+      }}>
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          display: 'flex',
           gap: '15px',
-          marginBottom: '20px'
+          flexWrap: 'wrap'
         }}>
           <select
             value={filters.type}
@@ -199,34 +210,31 @@ export default function GymMap() {
               fontSize: '14px'
             }}
           >
-            <option value="all">Tous les types</option>
-            <option value="fitness">Fitness</option>
-            <option value="crossfit">CrossFit</option>
-            <option value="yoga">Yoga</option>
-            <option value="swimming">Natation</option>
+            <option value="all">🏋️ Tous types</option>
+            <option value="fitness">💪 Fitness</option>
+            <option value="crossfit">🔥 CrossFit</option>
+            <option value="yoga">🧘 Yoga</option>
           </select>
-          
-          <select
+
+          <input
+            type="number"
+            placeholder="Distance max (km)"
             value={filters.distance}
-            onChange={(e) => setFilters(prev => ({ ...prev, distance: parseInt(e.target.value) }))}
+            onChange={(e) => setFilters(prev => ({ ...prev, distance: parseInt(e.target.value) || 10 }))}
             style={{
               padding: '10px 12px',
               borderRadius: '8px',
               backgroundColor: '#404040',
               color: '#ffffff',
               border: '1px solid #555555',
-              fontSize: '14px'
+              fontSize: '14px',
+              width: '150px'
             }}
-          >
-            <option value={5}>5 km</option>
-            <option value={10}>10 km</option>
-            <option value={20}>20 km</option>
-            <option value={50}>50 km</option>
-          </select>
-          
+          />
+
           <input
             type="number"
-            placeholder="Prix max"
+            placeholder="Prix max (€)"
             value={filters.maxPrice}
             onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: parseInt(e.target.value) || 100 }))}
             style={{
@@ -236,13 +244,15 @@ export default function GymMap() {
               color: '#ffffff',
               border: '1px solid #555555',
               fontSize: '14px',
-              width: '120px'
+              width: '150px'
             }}
           />
-          
+        </div>
+
+        <div>
           <input
             type="text"
-            placeholder="Rechercher une salle"
+            placeholder="🔍 Rechercher une salle..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -252,7 +262,8 @@ export default function GymMap() {
               color: '#ffffff',
               border: '1px solid #555555',
               fontSize: '14px',
-              width: '200px'
+              width: '100%',
+              maxWidth: '400px'
             }}
           />
         </div>
