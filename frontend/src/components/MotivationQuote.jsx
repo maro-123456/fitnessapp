@@ -94,18 +94,7 @@ const MotivationQuote = () => {
       textAlign: 'center',
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
     }}>
-      {/* Debug info */}
-      <div style={{ 
-        background: '#333', 
-        color: '#fff', 
-        padding: '10px', 
-        borderRadius: '5px', 
-        marginBottom: '10px',
-        fontSize: '12px',
-        textAlign: 'left'
-      }}>
-        Debug: loading={loading.toString()}, error={error}, quote={quote ? 'exists' : 'null'}
-      </div>
+
       
       <div style={{
         background: '#2d2d2d',
