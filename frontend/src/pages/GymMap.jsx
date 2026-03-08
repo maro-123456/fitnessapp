@@ -18,51 +18,63 @@ export default function GymMap() {
   const mongoDBGyms = [
     {
       id: 1,
-      name: "FitClub Paris Centre",
-      address: "75002 Paris, France",
-      phone: "01 42 34 56 78",
+      name: "FitLife Agadir",
+      address: "Boulevard du 20 Août, Agadir, Maroc",
+      phone: "+212 5 28 84 00 00",
       hours: "6h00 - 23h00",
       price: 49,
       type: "fitness",
       equipment: ["Tapis roulant", "Vélo elliptique", "Haltérophilie", "Musculation"],
       rating: 4.5,
-      coordinates: { lat: 48.8566, lng: 2.352 }
+      coordinates: { lat: 30.4278, lng: -9.5981 }
     },
     {
       id: 2,
-      name: "CrossFit Bastille",
-      address: "75011 Paris, France",
-      phone: "01 42 34 12 34",
-      hours: "6h00 - 22h00",
+      name: "Muscle Club Agadir",
+      address: "Avenue des Nations Unies, Agadir, Maroc",
+      phone: "+212 5 28 84 01 01",
+      hours: "7h00 - 22h00",
       price: 79,
-      type: "crossfit",
-      equipment: ["Kettlebells", "Barres", "Corde à sauter", "Poids libres"],
-      rating: 4.8,
-      coordinates: { lat: 48.853, lng: 2.349 }
+      type: "fitness",
+      equipment: ["Haltères", "Barres", "Machines cardio", "Salle de spinning"],
+      rating: 4.2,
+      coordinates: { lat: 30.4256, lng: -9.5995 }
     },
     {
       id: 3,
-      name: "Yoga Zen Marais",
-      address: "75004 Paris, France",
-      phone: "01 42 34 98 76",
+      name: "Yoga Zen Agadir",
+      address: "Quartier Founti, Agadir, Maroc",
+      phone: "+212 5 28 84 02 02",
       hours: "7h00 - 21h00",
       price: 35,
       type: "yoga",
       equipment: ["Tapis de yoga", "Coussins", "Blocs", "Sangles"],
-      rating: 4.9,
-      coordinates: { lat: 48.846, lng: 2.33 }
+      rating: 4.6,
+      coordinates: { lat: 30.4156, lng: -9.5857 }
     },
     {
       id: 4,
-      name: "Piscine Municipale",
-      address: "75013 Paris, France",
-      phone: "01 42 34 23 45",
-      hours: "7h00 - 21h00",
-      price: 25,
-      type: "swimming",
-      equipment: ["Piscine 25m", "Piscine 50m", "Toboggan", "Solarium"],
-      rating: 4.2,
-      coordinates: { lat: 48.8606, lng: 2.277 }
+      name: "CrossFit Agadir",
+      address: "Quartier Talborjt, Agadir, Maroc",
+      phone: "+212 5 28 84 03 03",
+      hours: "6h00 - 21h00",
+      price: 89,
+      type: "crossfit",
+      equipment: ["CrossFit rig", "Kettlebells", "Box jumps", "Battle ropes"],
+      rating: 4.8,
+      coordinates: { lat: 30.4235, lng: -9.5981 }
+    },
+    {
+      id: 5,
+      name: "Elite Fitness Agadir",
+      address: "Boulevard Mohammed V, Agadir, Maroc",
+      phone: "+212 5 28 84 04 04",
+      hours: "5h30 - 23h30",
+      price: 129,
+      type: "premium",
+      equipment: ["Piscine", "Sauna", "Machines dernier cri", "Zone crossfit"],
+      rating: 4.7,
+      coordinates: { lat: 30.4201, lng: -9.6132 }
     }
   ];
 
@@ -214,6 +226,7 @@ export default function GymMap() {
             <option value="fitness">💪 Fitness</option>
             <option value="crossfit">🔥 CrossFit</option>
             <option value="yoga">🧘 Yoga</option>
+            <option value="premium">⭐ Premium</option>
           </select>
 
           <input

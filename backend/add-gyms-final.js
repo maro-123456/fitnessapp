@@ -9,10 +9,10 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/fitnessapp'
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => console.error('Erreur de connexion MongoDB:', err));
 
-// Script pour ajouter des salles de sport à Agadir
+// Script pour ajouter des salles de sport à Agadir avec coordonnées sûres
 async function addGyms() {
   try {
-    console.log('🏋️ Ajout des salles de sport à Agadir...');
+    console.log('🏋️ Ajout des salles de sport à Agadir (version finale)...');
     
     // Supprimer les anciennes salles
     await Gym.deleteMany({});
@@ -20,9 +20,9 @@ async function addGyms() {
     const gyms = [
       {
         name: "FitLife Agadir",
-        address: "Boulevard du 20 Août",
+        address: "Boulevard du 20 Août, Agadir, Maroc",
         city: "Agadir",
-        coordinates: { lat: 30.4278, lng: -9.5981 },
+        coordinates: { lat: 30.4278, lng: -9.5981 }, // Centre d'Agadir
         facilities: ["cardio", "weights", "group_classes", "showers", "lockers"],
         openingHours: {
           monday: { open: "06:00", close: "23:00" },
@@ -39,9 +39,9 @@ async function addGyms() {
       },
       {
         name: "Muscle Club Agadir",
-        address: "Avenue des Nations Unies",
+        address: "Avenue des Nations Unies, Agadir, Maroc",
         city: "Agadir",
-        coordinates: { lat: 30.4256, lng: -9.5995 },
+        coordinates: { lat: 30.4256, lng: -9.5995 }, // Centre d'Agadir
         facilities: ["weights", "group_classes", "showers", "lockers"],
         openingHours: {
           monday: { open: "07:00", close: "22:00" },
@@ -57,29 +57,10 @@ async function addGyms() {
         description: "Salle spécialisée musculation et cardio à Agadir"
       },
       {
-        name: "CrossFit Agadir",
-        address: "Quartier Talborjt, Agadir, Maroc",
-        city: "Agadir",
-        coordinates: { lat: 30.4235, lng: -9.5981 },
-        facilities: ["weights", "group_classes", "showers", "lockers"],
-        openingHours: {
-          monday: { open: "06:00", close: "21:00" },
-          tuesday: { open: "06:00", close: "21:00" },
-          wednesday: { open: "06:00", close: "21:00" },
-          thursday: { open: "06:00", close: "21:00" },
-          friday: { open: "06:00", close: "21:00" },
-          saturday: { open: "07:00", close: "18:00" },
-          sunday: { open: "08:00", close: "16:00" }
-        },
-        priceRange: "$$$",
-        rating: { average: 4.8, count: 67 },
-        description: "Box CrossFit professionnelle avec coachs certifiés à Agadir"
-      },
-      {
         name: "Yoga Zen Agadir",
-        address: "Quartier Founti",
+        address: "Quartier Founti, Agadir, Maroc",
         city: "Agadir",
-        coordinates: { lat: 30.4156, lng: -9.5857 },
+        coordinates: { lat: 30.4156, lng: -9.5857 }, // Quartier Founti
         facilities: ["group_classes", "showers", "lockers"],
         openingHours: {
           monday: { open: "07:00", close: "20:00" },
@@ -95,10 +76,29 @@ async function addGyms() {
         description: "Studio dédié au yoga et bien-être à Agadir"
       },
       {
+        name: "CrossFit Agadir",
+        address: "Quartier Talborjt, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4235, lng: -9.5981 }, // Centre d'Agadir
+        facilities: ["weights", "group_classes", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "06:00", close: "21:00" },
+          tuesday: { open: "06:00", close: "21:00" },
+          wednesday: { open: "06:00", close: "21:00" },
+          thursday: { open: "06:00", close: "21:00" },
+          friday: { open: "06:00", close: "21:00" },
+          saturday: { open: "07:00", close: "18:00" },
+          sunday: { open: "08:00", close: "16:00" }
+        },
+        priceRange: "$$$",
+        rating: { average: 4.8, count: 67 },
+        description: "Box CrossFit professionnelle avec coachs certifiés à Agadir"
+      },
+      {
         name: "Elite Fitness Agadir",
         address: "Boulevard Mohammed V, Agadir, Maroc",
         city: "Agadir",
-        coordinates: { lat: 30.4201, lng: -9.6132 },
+        coordinates: { lat: 30.4201, lng: -9.6132 }, // Boulevard Mohammed V
         facilities: ["cardio", "weights", "pool", "sauna", "group_classes", "showers", "lockers"],
         openingHours: {
           monday: { open: "05:30", close: "23:30" },
