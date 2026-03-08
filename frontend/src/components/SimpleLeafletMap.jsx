@@ -15,7 +15,7 @@ export default function SimpleLeafletMap({ onLocationSelect, initialLocation = n
   const mapContainerRef = React.useRef(null);
   const mapRef = React.useRef(null);
 
-  const center = initialLocation || [48.8566, 2.3522]; // Paris par défaut
+  const center = initialLocation || [30.4278, -9.5981]; // Agadir par défaut
 
   React.useEffect(() => {
     if (!mapContainerRef.current) return;
