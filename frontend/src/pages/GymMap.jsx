@@ -75,6 +75,66 @@ export default function GymMap() {
       equipment: ["Piscine", "Sauna", "Machines dernier cri", "Zone crossfit"],
       rating: 4.7,
       coordinates: { lat: 30.4201, lng: -9.6132 }
+    },
+    {
+      id: 6,
+      name: "Power Gym Agadir",
+      address: "Avenue Prince Moulay Abdellah, Agadir, Maroc",
+      phone: "+212 5 28 84 05 05",
+      hours: "6h00 - 22h00",
+      price: 69,
+      type: "fitness",
+      equipment: ["Haltères", "Machines cardio", "Zone musculation", "Cours collectifs"],
+      rating: 4.3,
+      coordinates: { lat: 30.4312, lng: -9.5956 }
+    },
+    {
+      id: 7,
+      name: "Fitness Plus Agadir",
+      address: "Boulevard Youssef Ibn Tachfin, Agadir, Maroc",
+      phone: "+212 5 28 84 06 06",
+      hours: "7h00 - 23h00",
+      price: 59,
+      type: "fitness",
+      equipment: ["Tapis roulant", "Vélos", "Haltères", "Cours fitness"],
+      rating: 4.1,
+      coordinates: { lat: 30.4189, lng: -9.6023 }
+    },
+    {
+      id: 8,
+      name: "Pilates Studio Agadir",
+      address: "Rue d'Agadir, Quartier Dakhla, Agadir, Maroc",
+      phone: "+212 5 28 84 07 07",
+      hours: "8h00 - 20h00",
+      price: 45,
+      type: "yoga",
+      equipment: ["Tapis Pilates", "Ballons", "Élastiques", "Barres"],
+      rating: 4.7,
+      coordinates: { lat: 30.4245, lng: -9.5901 }
+    },
+    {
+      id: 9,
+      name: "Boxing Club Agadir",
+      address: "Avenue Hassan II, Agadir, Maroc",
+      phone: "+212 5 28 84 08 08",
+      hours: "16h00 - 22h00",
+      price: 75,
+      type: "crossfit",
+      equipment: ["Ring", "Sacs de frappe", "Gants", "Corde à sauter"],
+      rating: 4.4,
+      coordinates: { lat: 30.4298, lng: -9.5876 }
+    },
+    {
+      id: 10,
+      name: "Spa & Fitness Marina",
+      address: "Port d'Agadir, Marina, Agadir, Maroc",
+      phone: "+212 5 28 84 09 09",
+      hours: "7h00 - 21h00",
+      price: 149,
+      type: "premium",
+      equipment: ["Piscine", "Sauna", "Machines cardio", "Zone relaxation"],
+      rating: 4.8,
+      coordinates: { lat: 30.4376, lng: -9.6102 }
     }
   ];
 

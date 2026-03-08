@@ -160,7 +160,7 @@ export default function SimpleGymMap({ userLocation = null }) {
     return (
       <div style={{
         width: '100%',
-        height: '400px',
+        height: '600px', // Augmenté de 400px à 600px
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -182,7 +182,7 @@ export default function SimpleGymMap({ userLocation = null }) {
         ref={mapContainerRef}
         style={{
           width: '100%',
-          height: '400px',
+          height: '600px', // Augmenté de 400px à 600px
           borderRadius: '12px',
           border: '1px solid #404040',
           background: '#2d2d2d'

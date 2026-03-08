@@ -98,7 +98,7 @@ async function addGyms() {
         name: "Elite Fitness Agadir",
         address: "Boulevard Mohammed V, Agadir, Maroc",
         city: "Agadir",
-        coordinates: { lat: 30.4201, lng: -9.6132 }, // Boulevard Mohammed V
+        coordinates: { lat: 30.4201, lng: -9.7000 }, // Boulevard Mohammed V
         facilities: ["cardio", "weights", "pool", "sauna", "group_classes", "showers", "lockers"],
         openingHours: {
           monday: { open: "05:30", close: "23:30" },
@@ -112,6 +112,101 @@ async function addGyms() {
         priceRange: "$$$$",
         rating: { average: 4.7, count: 156 },
         description: "Club premium avec toutes les commodités à Agadir"
+      },
+      {
+        name: "Power Gym Agadir",
+        address: "Avenue Prince Moulay Abdellah, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4312, lng: -9.5956 }, // Nord d'Agadir
+        facilities: ["weights", "cardio", "group_classes", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "06:00", close: "22:00" },
+          tuesday: { open: "06:00", close: "22:00" },
+          wednesday: { open: "06:00", close: "22:00" },
+          thursday: { open: "06:00", close: "22:00" },
+          friday: { open: "06:00", close: "22:00" },
+          saturday: { open: "07:00", close: "20:00" },
+          sunday: { open: "08:00", close: "18:00" }
+        },
+        priceRange: "$$",
+        rating: { average: 4.3, count: 92 },
+        description: "Salle de sport complète avec équipements modernes"
+      },
+      {
+        name: "Fitness Plus Agadir",
+        address: "Boulevard Youssef Ibn Tachfin, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4189, lng: -9.6023 }, // Ouest d'Agadir
+        facilities: ["cardio", "weights", "group_classes", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "07:00", close: "23:00" },
+          tuesday: { open: "07:00", close: "23:00" },
+          wednesday: { open: "07:00", close: "23:00" },
+          thursday: { open: "07:00", close: "23:00" },
+          friday: { open: "07:00", close: "23:00" },
+          saturday: { open: "08:00", close: "21:00" },
+          sunday: { open: "09:00", close: "19:00" }
+        },
+        priceRange: "$$",
+        rating: { average: 4.1, count: 78 },
+        description: "Centre fitness avec programmes personnalisés"
+      },
+      {
+        name: "Pilates Studio Agadir",
+        address: "Rue d'Agadir, Quartier Dakhla, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4245, lng: -9.5901 }, // Centre d'Agadir
+        facilities: ["group_classes", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "08:00", close: "20:00" },
+          tuesday: { open: "08:00", close: "20:00" },
+          wednesday: { open: "08:00", close: "20:00" },
+          thursday: { open: "08:00", close: "20:00" },
+          friday: { open: "08:00", close: "20:00" },
+          saturday: { open: "09:00", close: "18:00" },
+          sunday: { open: "10:00", close: "16:00" }
+        },
+        priceRange: "$",
+        rating: { average: 4.7, count: 56 },
+        description: "Studio spécialisé en Pilates et rééducation"
+      },
+      {
+        name: "Boxing Club Agadir",
+        address: "Avenue Hassan II, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4298, lng: -9.5876 }, // Centre d'Agadir
+        facilities: ["weights", "cardio", "group_classes", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "16:00", close: "22:00" },
+          tuesday: { open: "16:00", close: "22:00" },
+          wednesday: { open: "16:00", close: "22:00" },
+          thursday: { open: "16:00", close: "22:00" },
+          friday: { open: "16:00", close: "22:00" },
+          saturday: { open: "10:00", close: "20:00" },
+          sunday: { open: "10:00", close: "18:00" }
+        },
+        priceRange: "$$",
+        rating: { average: 4.4, count: 63 },
+        description: "Club de boxe et arts martiaux avec ring professionnel"
+      },
+      {
+        name: "Spa & Fitness Marina",
+        address: "Port d'Agadir, Marina, Agadir, Maroc",
+        city: "Agadir",
+        coordinates: { lat: 30.4376, lng: -9.6102 }, // Port d'Agadir
+        facilities: ["cardio", "weights", "pool", "sauna", "showers", "lockers"],
+        openingHours: {
+          monday: { open: "07:00", close: "21:00" },
+          tuesday: { open: "07:00", close: "21:00" },
+          wednesday: { open: "07:00", close: "21:00" },
+          thursday: { open: "07:00", close: "21:00" },
+          friday: { open: "07:00", close: "21:00" },
+          saturday: { open: "08:00", close: "20:00" },
+          sunday: { open: "09:00", close: "19:00" }
+        },
+        priceRange: "$$$$",
+        rating: { average: 4.8, count: 112 },
+        description: "Centre de bien-être premium avec vue sur la marina"
       }
     ];
     
