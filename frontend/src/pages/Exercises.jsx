@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api"; // axios instance
 import { useLanguage } from "../contexts/LanguageContext";
+import { exerciseImages } from "../assets/exerciseImages";
 
 export default function Exercises() {
   const { t } = useLanguage();
@@ -154,7 +155,7 @@ export default function Exercises() {
               <div key={ex._id} style={styles.card}>
                 <div style={styles.imageContainer}>
                   <img 
-                    src={ex.image} 
+                    src={exerciseImages[ex.name] || ex.image} 
                     alt={ex.name} 
                     style={styles.image} 
                     onError={handleImageError}
